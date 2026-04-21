@@ -1,0 +1,3 @@
+method,analysis,outcome,n,term,scale,estimate,ci_lower,ci_upper,p_value,method_label,max_abs_smd,weight_max,n_match_groups
+ps_nn,overall,speed_mm2_min,714,atract,mean_difference,2.8085419102901614,0.49408271775179147,5.123001102828532,0.017389353436834558,PS-NN,0.0634170109140733,,357.0
+ow_dr,overall,speed_mm2_min,1081,atract,mean_difference,1.455574850985387,-0.7921883150077806,3.7033380169785546,0.20436763531341118,OW + DR,0.00018611832189292313,0.962288696740672,

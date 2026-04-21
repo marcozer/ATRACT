@@ -1,0 +1,28 @@
+term,coefficient
+Intercept,-4.328644204269072
+C(operator_id_public)[T.operator_02],-1.0961924799668468
+C(operator_id_public)[T.operator_03],-1.4168529535845615
+C(operator_id_public)[T.operator_04],-3.109575461929607
+C(operator_id_public)[T.operator_other],-2.0500689307493367
+C(study_year_index)[T.5],0.27983016619371415
+C(study_year_index)[T.6],1.2234963211544727
+C(study_year_index)[T.7],1.098391020093324
+C(study_year_index)[T.8],0.22254982646384794
+C(location_group)[T.ileocecal_valve],0.09586883157701163
+C(location_group)[T.rectum],-0.9045615562791977
+C(location_group)[T.right_colon_cecum],0.4066276568750849
+C(location_group)[T.sigmoid_left_colon],0.24986199310206994
+C(location_group)[T.transverse_colon],-0.055497040397498115
+C(lesion_type)[T.lst_nongranular],-0.11188765811718403
+C(lesion_type)[T.protruding_or_other],0.07825770616349918
+C(conecct_group)[T.iic],0.4058689202760712
+C(conecct_group)[T.iic_plus],1.3343749276627357
+C(conecct_group)[T.is],-0.1547074797022928
+C(fibrosis)[T.F1],0.02015669503662958
+C(fibrosis)[T.F2],0.2005995052478295
+"bs(major_diameter_mm, df=4, include_intercept=False)[0]",2.974469682854235
+"bs(major_diameter_mm, df=4, include_intercept=False)[1]",6.10755360053777
+"bs(major_diameter_mm, df=4, include_intercept=False)[2]",5.24220515487841
+"bs(major_diameter_mm, df=4, include_intercept=False)[3]",2.0535976193845564
+macronodule,-0.4277381839122292
+recurrence_history,0.22515029955592594

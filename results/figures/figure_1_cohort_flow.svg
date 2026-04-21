@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="568.8pt" height="424.8pt" viewBox="0 0 568.8 424.8" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-04-21T20:20:31.384409</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.9.4, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 424.8 
+L 568.8 424.8 
+L 568.8 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="text_1">
+    <g id="patch_2">
+     <path d="M 209.804687 70.885969 
+L 358.995312 70.885969 
+Q 362.995312 70.885969 362.995312 66.885969 
+L 362.995312 46.010031 
+Q 362.995312 42.010031 358.995312 42.010031 
+L 209.804687 42.010031 
+Q 205.804687 42.010031 205.804687 46.010031 
+L 205.804687 66.885969 
+Q 205.804687 70.885969 209.804687 70.885969 
+z
+" style="fill: #eceff4; stroke: #5e81ac; stroke-width: 1.2; stroke-linejoin: miter"/>
+    </g>
+    <text style="font: 10px 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif" transform="translate(209.804687 53.608469)">Broad cleaned traction cohort</text>
+    <text style="font: 10px 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif" transform="translate(262.727344 64.806281)"> n=2189</text>
+   </g>
+   <g id="text_2">
+    <g id="patch_3">
+     <path d="M 118.8625 177.589969 
+L 449.9375 177.589969 
+Q 453.9375 177.589969 453.9375 173.589969 
+L 453.9375 152.714031 
+Q 453.9375 148.714031 449.9375 148.714031 
+L 118.8625 148.714031 
+Q 114.8625 148.714031 114.8625 152.714031 
+L 114.8625 173.589969 
+Q 114.8625 177.589969 118.8625 177.589969 
+z
+" style="fill: #eceff4; stroke: #5e81ac; stroke-width: 1.2; stroke-linejoin: miter"/>
+    </g>
+    <text style="font: 10px 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif" transform="translate(118.8625 160.312469)">Speed analysis cohort after complete-case and support restriction</text>
+    <text style="font: 10px 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif" transform="translate(262.727344 171.510281)"> n=1081</text>
+   </g>
+   <g id="text_3">
+    <g id="patch_4">
+     <path d="M 190.026562 284.293969 
+L 378.773437 284.293969 
+Q 382.773437 284.293969 382.773437 280.293969 
+L 382.773437 259.418031 
+Q 382.773437 255.418031 378.773437 255.418031 
+L 190.026562 255.418031 
+Q 186.026562 255.418031 186.026562 259.418031 
+L 186.026562 280.293969 
+Q 186.026562 284.293969 190.026562 284.293969 
+z
+" style="fill: #eceff4; stroke: #5e81ac; stroke-width: 1.2; stroke-linejoin: miter"/>
+    </g>
+    <text style="font: 10px 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif" transform="translate(190.026562 267.016469)">Primary PS-NN matched speed cohort</text>
+    <text style="font: 10px 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif" transform="translate(265.908594 278.214281)"> n=714</text>
+   </g>
+   <g id="text_4">
+    <g id="patch_5">
+     <path d="M 197.071094 390.997969 
+L 371.728906 390.997969 
+Q 375.728906 390.997969 375.728906 386.997969 
+L 375.728906 366.122031 
+Q 375.728906 362.122031 371.728906 362.122031 
+L 197.071094 362.122031 
+Q 193.071094 362.122031 193.071094 366.122031 
+L 193.071094 386.997969 
+Q 193.071094 390.997969 197.071094 390.997969 
+z
+" style="fill: #eceff4; stroke: #5e81ac; stroke-width: 1.2; stroke-linejoin: miter"/>
+    </g>
+    <text style="font: 10px 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif" transform="translate(226.103906 373.720469)">Binary OW+DR cohorts</text>
+    <text style="font: 10px 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif" transform="translate(197.071094 384.918281)">R0 / perforation / delayed bleeding</text>
+   </g>
+   <g id="text_5">
+    <text style="font: 10px 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="284.4" y="403.943375" transform="rotate(-0 284.4 403.943375)">R0 n=1062   Perforation n=1086   Delayed bleeding n=1086</text>
+   </g>
+   <g id="patch_6">
+    <path d="M 284.4 103.594403 
+Q 284.4 115.957275 284.4 126.866703 
+" style="fill: none; stroke: #4c566a; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 286.4 122.866703 
+L 284.4 126.866703 
+L 282.4 122.866703 
+" style="fill: none; stroke: #4c566a; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 284.4 202.085394 
+Q 284.4 218.554562 284.4 233.570286 
+" style="fill: none; stroke: #4c566a; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 286.4 229.570286 
+L 284.4 233.570286 
+L 282.4 229.570286 
+" style="fill: none; stroke: #4c566a; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 284.4 308.789394 
+Q 284.4 325.258562 284.4 340.274286 
+" style="fill: none; stroke: #4c566a; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 286.4 336.274286 
+L 284.4 340.274286 
+L 282.4 336.274286 
+" style="fill: none; stroke: #4c566a; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+  </g>
+ </g>
+</svg>

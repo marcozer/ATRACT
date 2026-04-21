@@ -1,0 +1,35 @@
+dag {
+  "Patient factors" [pos="0.5,4.3"]
+  "Lesion complexity" [pos="3.0,4.3"]
+  "Calendar time" [pos="5.5,4.3"]
+  "Operator" [pos="7.8,4.3"]
+  "ATRACT" [exposure,pos="4.3,2.7"]
+  "Dissection speed" [outcome,pos="2.2,1.0"]
+  "R0 resection" [pos="4.5,1.0"]
+  "Perforation" [pos="6.6,1.0"]
+  "Delayed bleeding" [pos="8.6,1.0"]
+
+  "Patient factors" -> "R0 resection"
+  "Patient factors" -> "Perforation"
+  "Patient factors" -> "Delayed bleeding"
+
+  "Lesion complexity" -> "ATRACT"
+  "Lesion complexity" -> "Dissection speed"
+  "Lesion complexity" -> "R0 resection"
+  "Lesion complexity" -> "Perforation"
+  "Lesion complexity" -> "Delayed bleeding"
+
+  "Calendar time" -> "ATRACT"
+  "Calendar time" -> "Dissection speed"
+
+  "Operator" -> "ATRACT"
+  "Operator" -> "Dissection speed"
+  "Operator" -> "R0 resection"
+  "Operator" -> "Perforation"
+  "Operator" -> "Delayed bleeding"
+
+  "ATRACT" -> "Dissection speed"
+  "ATRACT" -> "R0 resection"
+  "ATRACT" -> "Perforation"
+  "ATRACT" -> "Delayed bleeding"
+}

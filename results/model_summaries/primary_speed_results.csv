@@ -1,0 +1,4 @@
+method,analysis,outcome,n,term,scale,estimate,ci_lower,ci_upper,p_value
+ps_nn,overall,speed_mm2_min,714,atract,mean_difference,2.8085419102901614,0.49408271775179147,5.123001102828532,0.017389353436834558
+ps_nn,large_lesion_>=50mm,speed_mm2_min,354,atract,mean_difference,5.834676135791511,2.0894948684665535,9.579857403116469,0.0022622010697153326
+ps_nn,interaction_large_lesion,speed_mm2_min,714,atract:large_lesion,interaction_difference,7.153426207883003,2.493246895248644,11.813605520517362,0.0026248365254692187

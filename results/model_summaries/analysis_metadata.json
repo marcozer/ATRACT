@@ -1,0 +1,77 @@
+{
+  "primary_speed": {
+    "analysis": "primary_speed_ps_nn",
+    "n_complete_case": 714,
+    "n_large_lesion": 354,
+    "n_match_groups": 357,
+    "top_operator_treated_share": 0.4257703081232493,
+    "spec_key": "primary_conecct",
+    "support_scope": "operator_year",
+    "min_per_arm": 3,
+    "ps_structure": "operator_plus_year",
+    "match_scope": "operator_only",
+    "ratio": 1,
+    "caliper_multiplier": 0.25,
+    "max_abs_smd": 0.0634170109140733,
+    "n_supported_cohort": 1081
+  },
+  "speed_robustness": {
+    "analysis": "speed_overlap_weighting_robustness",
+    "n_complete_case": 1081,
+    "weight_min": 0.002526109358420295,
+    "weight_max": 0.962288696740672,
+    "spec_key": "primary_conecct",
+    "support_scope": "operator_year",
+    "min_per_arm": 3,
+    "ps_structure": "operator_plus_year",
+    "max_abs_weighted_smd": 0.00018611832189292313
+  },
+  "primary_binary": {
+    "r0": {
+      "n_complete_case": 1062,
+      "weight_min": 0.0001,
+      "weight_max": 0.9596052581539181,
+      "max_abs_weighted_smd": 0.003423505970859608,
+      "spec_key": "primary_conecct",
+      "support_scope": "operator_year",
+      "min_per_arm": 3,
+      "ps_structure": "operator_plus_year"
+    },
+    "perforation": {
+      "n_complete_case": 1086,
+      "weight_min": 0.0024352917762614787,
+      "weight_max": 0.962649324131197,
+      "max_abs_weighted_smd": 0.000181473725542236,
+      "spec_key": "primary_conecct",
+      "support_scope": "operator_year",
+      "min_per_arm": 3,
+      "ps_structure": "operator_plus_year"
+    },
+    "delayed_bleeding": {
+      "n_complete_case": 1086,
+      "weight_min": 0.0024352917762614787,
+      "weight_max": 0.962649324131197,
+      "max_abs_weighted_smd": 0.000181473725542236,
+      "spec_key": "primary_conecct",
+      "support_scope": "operator_year",
+      "min_per_arm": 3,
+      "ps_structure": "operator_plus_year"
+    }
+  },
+  "matching": {
+    "ratio": 1,
+    "match_scope": "operator_only",
+    "caliper_grid": [
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.5,
+      0.6
+    ],
+    "selected_caliper_multiplier": 0.25
+  }
+}

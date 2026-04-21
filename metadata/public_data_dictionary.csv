@@ -1,0 +1,26 @@
+column_name,dtype,description,source_field
+atract,integer,"0 = non-ATRACT traction, 1 = ATRACT traction","ATRACT (0= non, 1= oui)"
+study_year_index,integer,Ordered study year index; 1 is earliest year in the cohort,Date examen
+operator_id_public,string,Pseudonymized operator identifier; rare operators collapsed to operator_other,Physician
+operator_experience,string,Operator experience group from the source workbook,Operateur simplifie
+age_years_topcoded,integer,"Age in years, top-coded at 90",Âge
+sex,string,Biological sex category from the source workbook,"Gender (1 male, 2 woman)"
+asa,integer,ASA physical status class,ASA
+anticoagulants,integer,"0 = no, 1 = yes",Anticoaggulants
+antiplatelets,integer,"0 = no, 1 = yes",Antiaggrégants
+location_group,string,Six-level lesion location grouping used in the public analysis,Localisation simplifiee
+major_diameter_mm,float,Largest specimen diameter in millimeters,Major diameter (mm)
+minor_diameter_mm,float,Minor specimen diameter in millimeters,Minor Diameter (mm)
+surface_mm2,float,Dissected specimen surface area in square millimeters,Surface
+lesion_type,string,Normalized lesion morphology category,"Type de lésion (1 Polype, 2 LST Granulaire, 3 LST non granulaire)"
+macronodule,integer,"0 = absent, 1 = present",Macronodule
+jnet_group,string,Normalized JNET class used in sensitivity analyses,"JNET (1= JNET  I, 2= JNET IIa, 3= JNET IIB, 4= JNET III)"
+conecct_group,string,Normalized CONECCT class used in modeling,"CONECCT (1=1H, 2=Is, 3=IIA, 4=IIC, 5=IIC+, 6=III, 7=OE)"
+fibrosis,string,Normalized fibrosis category,Fibrosis
+recurrence_history,integer,"0 = no recurrence/scar history, 1 = recurrence or scar history",HISTOIRE DU POLYPE... / Recidive post MUCO ou chir 1 oui 0 non
+procedure_duration_min,float,Procedure duration in minutes,Duration of procedure Procédure (min)
+speed_mm2_min,float,Dissection speed in square millimeters per minute,Vitesse
+r0,integer,"0 = non-R0, 1 = R0 histology","R0 histology (0=no, 1=yes)"
+perforation,integer,"0 = no intraprocedural perforation, 1 = perforation",Intraprocedural perforation
+delayed_bleeding,integer,"0 = no delayed bleeding, 1 = delayed bleeding",Delayed bleeding
+curative_resection,integer,"0 = non-curative resection, 1 = curative resection","Curative resection (0=no, 1=yes)"
