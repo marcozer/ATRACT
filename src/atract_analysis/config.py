@@ -56,9 +56,11 @@ PUBLIC_COLUMNS = [
     "surface_mm2",
     "lesion_type",
     "macronodule",
+    "lesion_morphology",
     "jnet_group",
     "conecct_group",
     "fibrosis",
+    "mici_history",
     "recurrence_history",
     "procedure_duration_min",
     "speed_mm2_min",
@@ -124,6 +126,8 @@ JNET_MAP = {
     4: "jnet_iii",
 }
 
+EXCLUDED_JNET_GROUPS = {"jnet_iii"}
+
 FIBROSIS_MAP = {
     0: "F0",
     1: "F1",
@@ -146,33 +150,32 @@ PUBLIC_OPERATORS = [
 ]
 
 PRIMARY_OPERATOR_YEAR_MIN_PER_ARM = 3
-PRIMARY_SUPPORT_SCOPE = "operator_year"
-PRIMARY_PS_STRUCTURE = "operator_plus_year"
+PRIMARY_SUPPORT_SCOPE = "operator_only"
+PRIMARY_PS_STRUCTURE = "operator_only_plus_year_numeric"
 LARGE_LESION_CUTOFF_MM = 50
 NN_MATCH_RATIO = 1
 NN_MATCH_SCOPE = "operator_only"
 PRIMARY_MATCH_CALIPER_GRID = [0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.50, 0.60]
-PRIMARY_MATCH_MAX_SMD = 0.07
+PRIMARY_MATCH_MAX_SMD = 0.10
 PRIMARY_MATCH_MAX_OPERATOR_SHARE = 0.60
 
 BINARY_OUTCOMES = ["r0", "perforation", "delayed_bleeding"]
 
 CAUSAL_SPECS = {
-    "primary_conecct": {
+    "primary_jnet": {
         "ps_rhs": (
             "bs(major_diameter_mm, df=4, include_intercept=False) + "
-            "C(location_group) + C(lesion_type) + macronodule + C(conecct_group) + "
-            "C(fibrosis) + recurrence_history"
+            "C(location_group) + C(lesion_morphology) + C(jnet_group) + "
+            "mici_history + recurrence_history"
         ),
         "balance_covariates": [
             "study_year_index",
             "operator_id_public",
             "major_diameter_mm",
             "location_group",
-            "lesion_type",
-            "macronodule",
-            "conecct_group",
-            "fibrosis",
+            "lesion_morphology",
+            "jnet_group",
+            "mici_history",
             "recurrence_history",
         ],
         "speed_required_columns": [
@@ -180,10 +183,9 @@ CAUSAL_SPECS = {
             "operator_id_public",
             "major_diameter_mm",
             "location_group",
-            "lesion_type",
-            "macronodule",
-            "conecct_group",
-            "fibrosis",
+            "lesion_morphology",
+            "jnet_group",
+            "mici_history",
             "recurrence_history",
             "speed_mm2_min",
             "procedure_duration_min",
@@ -192,18 +194,21 @@ CAUSAL_SPECS = {
         "speed_aug_rhs": (
             "C(operator_id_public) + C(study_year_index) + "
             "bs(major_diameter_mm, df=4, include_intercept=False) + "
-            "C(location_group) + C(lesion_type) + macronodule + "
-            "C(conecct_group) + C(fibrosis) + recurrence_history"
+            "C(location_group) + C(lesion_morphology) + C(jnet_group) + "
+            "mici_history + recurrence_history"
+        ),
+        "speed_matched_rhs": (
+            "C(study_year_index) + "
+            "bs(major_diameter_mm, df=4, include_intercept=False)"
         ),
         "binary_required_columns": [
             "study_year_index",
             "operator_id_public",
             "major_diameter_mm",
             "location_group",
-            "lesion_type",
-            "macronodule",
-            "conecct_group",
-            "fibrosis",
+            "lesion_morphology",
+            "jnet_group",
+            "mici_history",
             "recurrence_history",
             "age_years_topcoded",
             "sex",
@@ -215,13 +220,13 @@ CAUSAL_SPECS = {
             "C(operator_id_public) + C(study_year_index) + age_years_topcoded + "
             "C(sex) + C(asa) + anticoagulants + antiplatelets + "
             "bs(major_diameter_mm, df=4, include_intercept=False) + "
-            "C(location_group) + C(lesion_type) + macronodule + "
-            "C(conecct_group) + C(fibrosis) + recurrence_history"
+            "C(location_group) + C(lesion_morphology) + C(jnet_group) + "
+            "mici_history + recurrence_history"
         ),
     },
 }
 
-PRIMARY_CAUSAL_SPEC = "primary_conecct"
+PRIMARY_CAUSAL_SPEC = "primary_jnet"
 
 BANNED_RAW_COLUMNS = [
     "ID",
@@ -260,10 +265,12 @@ DATA_DICTIONARY_ROWS = [
     ("minor_diameter_mm", "float", "Minor specimen diameter in millimeters", "Minor Diameter (mm)"),
     ("surface_mm2", "float", "Dissected specimen surface area in square millimeters", "Surface"),
     ("lesion_type", "string", "Normalized lesion morphology category", "Type de lésion (1 Polype, 2 LST Granulaire, 3 LST non granulaire)"),
-    ("macronodule", "integer", "0 = absent, 1 = present", "Macronodule"),
-    ("jnet_group", "string", "Normalized JNET class used in sensitivity analyses", "JNET (1= JNET  I, 2= JNET IIa, 3= JNET IIB, 4= JNET III)"),
-    ("conecct_group", "string", "Normalized CONECCT class used in modeling", "CONECCT (1=1H, 2=Is, 3=IIA, 4=IIC, 5=IIC+, 6=III, 7=OE)"),
+    ("macronodule", "integer", "0 = absent, 1 = present; only applicable to LST granular lesions, missing otherwise", "Macronodule"),
+    ("lesion_morphology", "string", "Composite morphology category; macronodule status is used only within LST granular lesions", "Type de lésion / Macronodule"),
+    ("jnet_group", "string", "Normalized JNET class used in modeling; JNET III is excluded from the analytic cohort", "JNET (1= JNET  I, 2= JNET IIa, 3= JNET IIB, 4= JNET III)"),
+    ("conecct_group", "string", "Normalized CONECCT class retained for descriptive traceability but not used in the primary model", "CONECCT (1=1H, 2=Is, 3=IIA, 4=IIC, 5=IIC+, 6=III, 7=OE)"),
     ("fibrosis", "string", "Normalized fibrosis category", "Fibrosis"),
+    ("mici_history", "integer", "0 = no inflammatory bowel disease history, 1 = inflammatory bowel disease history", "HISTOIRE DU POLYPE..."),
     ("recurrence_history", "integer", "0 = no recurrence/scar history, 1 = recurrence or scar history", "HISTOIRE DU POLYPE... / Recidive post MUCO ou chir 1 oui 0 non"),
     ("procedure_duration_min", "float", "Procedure duration in minutes", "Duration of procedure Procédure (min)"),
     ("speed_mm2_min", "float", "Dissection speed in square millimeters per minute", "Vitesse"),

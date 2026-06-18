@@ -101,10 +101,13 @@ def plot_cohort_flow(flow_counts: dict[str, int], output_path: Path) -> None:
 
 
 def plot_speed_effects(primary_speed: pd.DataFrame, speed_robustness: pd.DataFrame, output_path: Path) -> None:
-    primary_plot = primary_speed.loc[primary_speed["analysis"].isin(["overall", "large_lesion_>=50mm"])].copy()
+    primary_plot = primary_speed.loc[
+        primary_speed["analysis"].isin(["overall", "small_lesion_<50mm", "large_lesion_>=50mm"])
+    ].copy()
     primary_plot["label"] = primary_plot["analysis"].map(
         {
             "overall": "PS-NN overall",
+            "small_lesion_<50mm": "PS-NN lesions <50 mm",
             "large_lesion_>=50mm": "PS-NN lesions ≥50 mm",
         }
     )

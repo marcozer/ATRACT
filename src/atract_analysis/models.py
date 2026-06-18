@@ -260,6 +260,13 @@ def _fit_primary_speed_models(matched: pd.DataFrame, augment_rhs: str) -> tuple[
         data=large_lesions,
     ).fit(cov_type="cluster", cov_kwds={"groups": large_cluster_codes})
 
+    small_lesions = matched.loc[matched["large_lesion"].eq(0)].copy()
+    small_cluster_codes = small_lesions["_match_group"].astype("category").cat.codes
+    small_model = smf.ols(
+        f"speed_mm2_min ~ atract + {augment_rhs}",
+        data=small_lesions,
+    ).fit(cov_type="cluster", cov_kwds={"groups": small_cluster_codes})
+
     interaction_model = smf.ols(
         f"speed_mm2_min ~ atract * large_lesion + {augment_rhs}",
         data=matched,
@@ -273,6 +280,13 @@ def _fit_primary_speed_models(matched: pd.DataFrame, augment_rhs: str) -> tuple[
                 "outcome": "speed_mm2_min",
                 "n": int(len(matched)),
                 **_extract_linear_effect(overall_model, "atract", "mean_difference"),
+            },
+            {
+                "method": "ps_nn",
+                "analysis": f"small_lesion_<{LARGE_LESION_CUTOFF_MM}mm",
+                "outcome": "speed_mm2_min",
+                "n": int(len(small_lesions)),
+                **_extract_linear_effect(small_model, "atract", "mean_difference"),
             },
             {
                 "method": "ps_nn",
@@ -293,6 +307,7 @@ def _fit_primary_speed_models(matched: pd.DataFrame, augment_rhs: str) -> tuple[
     metadata = {
         "analysis": "primary_speed_ps_nn",
         "n_complete_case": int(len(matched)),
+        "n_small_lesion": int(len(small_lesions)),
         "n_large_lesion": int(len(large_lesions)),
         "n_match_groups": int(matched["_match_group"].nunique()),
         "top_operator_treated_share": _max_operator_treated_share(matched),
@@ -360,7 +375,7 @@ def run_primary_speed_analysis(dataframe: pd.DataFrame) -> dict[str, object]:
 
     selected_caliper = float(selected["caliper_multiplier"])
     matched_frame, balance_table = payloads[selected_caliper]
-    effects, metadata = _fit_primary_speed_models(matched_frame, str(spec["speed_aug_rhs"]))
+    effects, metadata = _fit_primary_speed_models(matched_frame, str(spec["speed_matched_rhs"]))
     metadata.update(
         {
             "spec_key": PRIMARY_CAUSAL_SPEC,

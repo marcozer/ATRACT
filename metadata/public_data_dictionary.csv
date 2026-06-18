@@ -13,10 +13,12 @@ major_diameter_mm,float,Largest specimen diameter in millimeters,Major diameter 
 minor_diameter_mm,float,Minor specimen diameter in millimeters,Minor Diameter (mm)
 surface_mm2,float,Dissected specimen surface area in square millimeters,Surface
 lesion_type,string,Normalized lesion morphology category,"Type de lésion (1 Polype, 2 LST Granulaire, 3 LST non granulaire)"
-macronodule,integer,"0 = absent, 1 = present",Macronodule
-jnet_group,string,Normalized JNET class used in sensitivity analyses,"JNET (1= JNET  I, 2= JNET IIa, 3= JNET IIB, 4= JNET III)"
-conecct_group,string,Normalized CONECCT class used in modeling,"CONECCT (1=1H, 2=Is, 3=IIA, 4=IIC, 5=IIC+, 6=III, 7=OE)"
+macronodule,integer,"0 = absent, 1 = present; only applicable to LST granular lesions, missing otherwise",Macronodule
+lesion_morphology,string,Composite morphology category; macronodule status is used only within LST granular lesions,Type de lésion / Macronodule
+jnet_group,string,Normalized JNET class used in modeling; JNET III is excluded from the analytic cohort,"JNET (1= JNET  I, 2= JNET IIa, 3= JNET IIB, 4= JNET III)"
+conecct_group,string,Normalized CONECCT class retained for descriptive traceability but not used in the primary model,"CONECCT (1=1H, 2=Is, 3=IIA, 4=IIC, 5=IIC+, 6=III, 7=OE)"
 fibrosis,string,Normalized fibrosis category,Fibrosis
+mici_history,integer,"0 = no inflammatory bowel disease history, 1 = inflammatory bowel disease history",HISTOIRE DU POLYPE...
 recurrence_history,integer,"0 = no recurrence/scar history, 1 = recurrence or scar history",HISTOIRE DU POLYPE... / Recidive post MUCO ou chir 1 oui 0 non
 procedure_duration_min,float,Procedure duration in minutes,Duration of procedure Procédure (min)
 speed_mm2_min,float,Dissection speed in square millimeters per minute,Vitesse

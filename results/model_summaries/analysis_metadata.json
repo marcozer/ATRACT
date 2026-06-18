@@ -1,61 +1,62 @@
 {
   "primary_speed": {
     "analysis": "primary_speed_ps_nn",
-    "n_complete_case": 714,
-    "n_large_lesion": 354,
-    "n_match_groups": 357,
-    "top_operator_treated_share": 0.4257703081232493,
-    "spec_key": "primary_conecct",
-    "support_scope": "operator_year",
+    "n_complete_case": 782,
+    "n_small_lesion": 372,
+    "n_large_lesion": 410,
+    "n_match_groups": 391,
+    "top_operator_treated_share": 0.37595907928388744,
+    "spec_key": "primary_jnet",
+    "support_scope": "operator_only",
     "min_per_arm": 3,
-    "ps_structure": "operator_plus_year",
+    "ps_structure": "operator_only_plus_year_numeric",
     "match_scope": "operator_only",
     "ratio": 1,
-    "caliper_multiplier": 0.25,
-    "max_abs_smd": 0.0634170109140733,
-    "n_supported_cohort": 1081
+    "caliper_multiplier": 0.2,
+    "max_abs_smd": 0.09279768379871821,
+    "n_supported_cohort": 1916
   },
   "speed_robustness": {
     "analysis": "speed_overlap_weighting_robustness",
-    "n_complete_case": 1081,
-    "weight_min": 0.002526109358420295,
-    "weight_max": 0.962288696740672,
-    "spec_key": "primary_conecct",
-    "support_scope": "operator_year",
+    "n_complete_case": 1916,
+    "weight_min": 0.0001,
+    "weight_max": 0.9943724952659678,
+    "spec_key": "primary_jnet",
+    "support_scope": "operator_only",
     "min_per_arm": 3,
-    "ps_structure": "operator_plus_year",
-    "max_abs_weighted_smd": 0.00018611832189292313
+    "ps_structure": "operator_only_plus_year_numeric",
+    "max_abs_weighted_smd": 0.0001253799360070842
   },
   "primary_binary": {
     "r0": {
-      "n_complete_case": 1062,
+      "n_complete_case": 1906,
       "weight_min": 0.0001,
-      "weight_max": 0.9596052581539181,
-      "max_abs_weighted_smd": 0.003423505970859608,
-      "spec_key": "primary_conecct",
-      "support_scope": "operator_year",
+      "weight_max": 0.9941655141537371,
+      "max_abs_weighted_smd": 0.00018011448430360491,
+      "spec_key": "primary_jnet",
+      "support_scope": "operator_only",
       "min_per_arm": 3,
-      "ps_structure": "operator_plus_year"
+      "ps_structure": "operator_only_plus_year_numeric"
     },
     "perforation": {
-      "n_complete_case": 1086,
-      "weight_min": 0.0024352917762614787,
-      "weight_max": 0.962649324131197,
-      "max_abs_weighted_smd": 0.000181473725542236,
-      "spec_key": "primary_conecct",
-      "support_scope": "operator_year",
+      "n_complete_case": 1935,
+      "weight_min": 0.0001,
+      "weight_max": 0.9944270872620069,
+      "max_abs_weighted_smd": 0.00045150518159572104,
+      "spec_key": "primary_jnet",
+      "support_scope": "operator_only",
       "min_per_arm": 3,
-      "ps_structure": "operator_plus_year"
+      "ps_structure": "operator_only_plus_year_numeric"
     },
     "delayed_bleeding": {
-      "n_complete_case": 1086,
-      "weight_min": 0.0024352917762614787,
-      "weight_max": 0.962649324131197,
-      "max_abs_weighted_smd": 0.000181473725542236,
-      "spec_key": "primary_conecct",
-      "support_scope": "operator_year",
+      "n_complete_case": 1935,
+      "weight_min": 0.0001,
+      "weight_max": 0.9944270872620069,
+      "max_abs_weighted_smd": 0.00045150518159572104,
+      "spec_key": "primary_jnet",
+      "support_scope": "operator_only",
       "min_per_arm": 3,
-      "ps_structure": "operator_plus_year"
+      "ps_structure": "operator_only_plus_year_numeric"
     }
   },
   "matching": {
@@ -72,6 +73,6 @@
       0.5,
       0.6
     ],
-    "selected_caliper_multiplier": 0.25
+    "selected_caliper_multiplier": 0.2
   }
 }

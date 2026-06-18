@@ -10,6 +10,7 @@ from .config import (
     DATA_DICTIONARY_ROWS,
     EXPERIENCE_MAP,
     EXCLUDED_RAW_LOCATION_CODES,
+    EXCLUDED_JNET_GROUPS,
     FIBROSIS_MAP,
     JNET_MAP,
     LESION_TYPE_MAP,
@@ -91,6 +92,26 @@ def _normalize_recurrence(history_text: pd.Series, history_binary: pd.Series) ->
     return recurrence.astype("Int64")
 
 
+def _normalize_mici(history_text: pd.Series) -> pd.Series:
+    text = (
+        history_text.fillna("")
+        .astype(str)
+        .str.lower()
+        .str.normalize("NFKD")
+        .str.encode("ascii", errors="ignore")
+        .str.decode("ascii")
+    )
+    return text.str.contains("mici", na=False).astype("Int64")
+
+
+def _build_lesion_morphology(lesion_type: pd.Series, macronodule: pd.Series) -> pd.Series:
+    morphology = lesion_type.astype("string").copy()
+    macronodule_flag = macronodule.fillna(0).astype(int).eq(1)
+    morphology = morphology.mask(morphology.eq("lst_granular") & macronodule_flag, "lst_granular_macronodule")
+    morphology = morphology.mask(morphology.eq("lst_granular") & ~macronodule_flag, "lst_granular_no_macronodule")
+    return morphology.astype("string")
+
+
 def build_public_dataset(raw_dataframe: pd.DataFrame) -> pd.DataFrame:
     dataframe = normalize_missing_values(raw_dataframe)
     raw_location = _resolve_raw_location_series(dataframe)
@@ -118,6 +139,10 @@ def build_public_dataset(raw_dataframe: pd.DataFrame) -> pd.DataFrame:
     operator_experience = _resolve_operator_experience_series(dataframe)
     surface_series = _resolve_surface_series(dataframe)
     speed_series = _resolve_speed_series(dataframe, surface_series)
+    lesion_type = dataframe[RAW_COLUMNS["lesion_type"]].map(LESION_TYPE_MAP).fillna("protruding_or_other").astype("string")
+    macronodule = _to_binary(dataframe[RAW_COLUMNS["macronodule"]])
+    macronodule_applicable = macronodule.where(lesion_type.eq("lst_granular"), pd.NA)
+    jnet_group = dataframe[RAW_COLUMNS["jnet"]].map(JNET_MAP).astype("string")
 
     public_dataframe = pd.DataFrame(
         {
@@ -134,11 +159,13 @@ def build_public_dataset(raw_dataframe: pd.DataFrame) -> pd.DataFrame:
             "major_diameter_mm": _to_numeric(dataframe[RAW_COLUMNS["major_diameter"]]),
             "minor_diameter_mm": _to_numeric(dataframe[RAW_COLUMNS["minor_diameter"]]),
             "surface_mm2": surface_series,
-            "lesion_type": dataframe[RAW_COLUMNS["lesion_type"]].map(LESION_TYPE_MAP).fillna("protruding_or_other").astype("string"),
-            "macronodule": _to_binary(dataframe[RAW_COLUMNS["macronodule"]]),
-            "jnet_group": dataframe[RAW_COLUMNS["jnet"]].map(JNET_MAP).astype("string"),
+            "lesion_type": lesion_type,
+            "macronodule": macronodule_applicable,
+            "lesion_morphology": _build_lesion_morphology(lesion_type, macronodule_applicable),
+            "jnet_group": jnet_group,
             "conecct_group": dataframe[RAW_COLUMNS["conecct"]].map(CONECCT_MAP).astype("string"),
             "fibrosis": dataframe[RAW_COLUMNS["fibrosis"]].map(FIBROSIS_MAP).astype("string"),
+            "mici_history": _normalize_mici(dataframe[RAW_COLUMNS["history_text"]]),
             "recurrence_history": _normalize_recurrence(
                 dataframe[RAW_COLUMNS["history_text"]],
                 dataframe[RAW_COLUMNS["history_binary"]],
@@ -151,6 +178,7 @@ def build_public_dataset(raw_dataframe: pd.DataFrame) -> pd.DataFrame:
             "curative_resection": _to_binary(dataframe[RAW_COLUMNS["curative_resection"]]),
         }
     )[PUBLIC_COLUMNS]
+    public_dataframe = public_dataframe.loc[~public_dataframe["jnet_group"].isin(EXCLUDED_JNET_GROUPS)].copy()
 
     public_dataframe = public_dataframe.sort_values(
         by=["study_year_index", "operator_id_public", "atract", "major_diameter_mm", "surface_mm2"],

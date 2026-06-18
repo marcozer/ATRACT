@@ -6,9 +6,9 @@ Produce a public analytic dataset that reproduces the statistical analysis while
 
 ## Source
 
-- Private source workbook: local `base.xlsx`
-- Source sheet: `Feuil1`
-- Public cohort: procedures with `TRACTION == 1` and `ATRACT in {0, 1}`
+- Private source workbook: local `base24.xlsx`
+- Source sheet: automatically detected from the workbook
+- Public cohort: procedures with `TRACTION == 1`, `ATRACT in {0, 1}`, interpretable anatomic location, and no JNET III classification
 
 ## Transformations
 
@@ -25,7 +25,7 @@ Produce a public analytic dataset that reproduces the statistical analysis while
 - Top-code age:
   any age above `90` becomes `90`
 - Standardize categorical values:
-  location, lesion type, fibrosis, CONECCT, sex, and recurrence history are normalized into stable public categories
+  location, lesion morphology, fibrosis, JNET, CONECCT, sex, inflammatory bowel disease history, and recurrence history are normalized into stable public categories
 
 ## Disclosure controls
 
@@ -37,5 +37,4 @@ Produce a public analytic dataset that reproduces the statistical analysis while
 
 ## Intended data-use terms
 
-The committed deidentified dataset is intended for non-commercial academic reuse with attribution. Raw clinical source data are not distributed in this repository.
-
+The deidentified analytic dataset is not publicly distributed at this stage. Access is available upon reasonable request to the study team and remains subject to institutional and governance review. Raw clinical source data are not distributed in this repository.

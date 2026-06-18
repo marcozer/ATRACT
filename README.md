@@ -60,7 +60,7 @@ The public dataset keeps only the variables needed to understand case complexity
 
 - lesion size and location
 - lesion morphology and optical classification
-- fibrosis and recurrence/scar history
+- inflammatory bowel disease and recurrence/scar history
 - pseudonymized operator identifier
 - procedure duration and derived dissection speed
 - R0 resection, perforation, and delayed bleeding
@@ -74,6 +74,7 @@ The full list and source mapping are in `metadata/public_data_dictionary.csv`.
 - Direct identifiers and free text are removed
 - Age is top-coded at `90`
 - Rare operators are collapsed into `operator_other`
+- JNET III lesions are excluded from the analytic cohort
 
 ## Statistical rationale
 
@@ -82,13 +83,12 @@ The study compares adaptive traction (`ATRACT`) with conventional traction in an
 The analysis is structured as a prespecified causal inference workflow. Covariates were selected a priori from a directed acyclic graph and restricted to variables plausibly known before or at the time of treatment choice. The core adjustment set includes:
 
 - operator
-- calendar year
+- calendar time
 - lesion size
 - lesion location
 - lesion morphology
-- macronodule
-- CONECCT classification
-- fibrosis
+- JNET classification
+- inflammatory bowel disease history
 - recurrence or scar history
 
 These variables were prespecified from a causal diagram in `metadata/dagitty_model.txt`.
@@ -100,9 +100,10 @@ Two complementary estimators are retained in the public workflow.
 The primary analysis for dissection speed uses `1:1` nearest-neighbor propensity score matching without replacement.
 
 - The propensity score models the probability of receiving ATRACT conditional on the prespecified pre-treatment covariates.
-- Matching is exact on operator; calendar year is included in the propensity score model.
+- Matching is exact on operator; calendar time is included in the propensity score model as an ordered study-year term.
 - The final caliper is selected from a prespecified grid using covariate balance and retained sample size, not significance testing.
 - The retained matched sample is the largest one satisfying the locked balance criterion used in the manuscript.
+- Effect estimation in the matched cohort uses a parsimonious post-match model adjusted for calendar year and lesion size, with matched-set clustered standard errors.
 
 This estimator was chosen as the primary analysis because it targets the comparison of clinically comparable treated and control procedures while keeping the design transparent and auditable.
 
@@ -123,8 +124,8 @@ The committed workflow implements:
 1. Locked broad-cohort construction from the deidentified analytic dataset
 2. Baseline descriptive table for ATRACT versus non-ATRACT
 3. Minimal broad-cohort cleanup with exclusion of uninterpretable locations and raw location `10`
-4. Support restriction in comparable operator-year cells
-5. Primary `1:1` nearest-neighbor propensity-score matching analysis for `speed_mm2_min`, exact on operator with year handled in the PS
+4. Support restriction to operators with empirical data in both treatment groups
+5. Primary `1:1` nearest-neighbor propensity-score matching analysis for `speed_mm2_min`, exact on operator with calendar time handled in the PS
 6. Overlap-weighted doubly robust robustness analysis for `speed_mm2_min`
 7. Primary overlap-weighted doubly robust analyses for `r0`, `perforation`, and `delayed_bleeding`
 8. Lean supplementary diagnostics: DAG, balance table, overlap plot, and matching grid

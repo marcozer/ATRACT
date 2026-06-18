@@ -15,9 +15,11 @@ VARIABLE_LABELS = {
     "operator_id_public": "Operator",
     "location_group": "Location",
     "lesion_type": "Lesion type",
+    "lesion_morphology": "Lesion morphology",
     "jnet_group": "JNET",
     "conecct_group": "CONECCT",
     "fibrosis": "Fibrosis",
+    "mici_history": "IBD history",
     "recurrence_history": "Recurrence or scar history",
 }
 
@@ -32,6 +34,8 @@ LEVEL_LABELS = {
     "right_colon_cecum": "Right colon/cecum",
     "ileocecal_valve": "Ileocecal valve",
     "lst_granular": "LST granular",
+    "lst_granular_no_macronodule": "LST granular without macronodule",
+    "lst_granular_macronodule": "LST granular with macronodule",
     "lst_nongranular": "LST nongranular",
     "protruding_or_other": "Protruding or other",
     "jnet_i": "JNET I",
@@ -94,10 +98,11 @@ def build_table_one(dataframe: pd.DataFrame) -> pd.DataFrame:
         "sex": ["male", "female"],
         "operator_id_public": sorted(dataframe["operator_id_public"].dropna().unique()),
         "location_group": sorted(dataframe["location_group"].dropna().unique()),
-        "lesion_type": sorted(dataframe["lesion_type"].dropna().unique()),
+        "lesion_morphology": sorted(dataframe["lesion_morphology"].dropna().unique()),
         "jnet_group": sorted(dataframe["jnet_group"].dropna().unique()),
         "conecct_group": sorted(dataframe["conecct_group"].dropna().unique()),
         "fibrosis": ["F0", "F1", "F2"],
+        "mici_history": [0, 1],
         "recurrence_history": [0, 1],
     }
     for column, levels in categorical_levels.items():
@@ -124,6 +129,7 @@ def build_main_results_table(
     speed_effects["outcome_label"] = speed_effects["analysis"].map(
         {
             "overall": "Overall speed",
+            "small_lesion_<50mm": "Speed in lesions <50 mm",
             "large_lesion_>=50mm": "Speed in lesions ≥50 mm",
             "interaction_large_lesion": "Interaction with lesions ≥50 mm",
         }

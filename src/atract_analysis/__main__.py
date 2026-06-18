@@ -101,3 +101,7 @@ def main() -> None:
             write_public_release(args.raw, args.input, REPO_ROOT / "metadata" / "public_data_dictionary.csv")
         run_analysis(args.input)
         return
+
+
+if __name__ == "__main__":
+    main()
