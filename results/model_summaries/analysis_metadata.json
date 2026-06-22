@@ -1,4 +1,25 @@
 {
+  "dataset": {
+    "sha256": "2da50256c21f9198c963fa3042a8818faf762c574054b87358f1487e65f3089c",
+    "expected_sha256": "2da50256c21f9198c963fa3042a8818faf762c574054b87358f1487e65f3089c"
+  },
+  "software": {
+    "python": "3.9.6",
+    "matplotlib": "3.9.4",
+    "numpy": "2.0.2",
+    "openpyxl": "3.1.5",
+    "pandas": "2.3.3",
+    "patsy": "1.0.2",
+    "scipy": "1.13.1",
+    "statsmodels": "0.14.6"
+  },
+  "formulas": {
+    "propensity_score": "atract ~ C(operator_id_public) + study_year_index + bs(major_diameter_mm, df=4, include_intercept=False) + C(location_group) + C(lesion_morphology) + C(jnet_group) + mici_history + recurrence_history",
+    "speed_matched_outcome": "speed_mm2_min ~ atract + C(study_year_index) + bs(major_diameter_mm, df=4, include_intercept=False)",
+    "speed_matched_interaction": "speed_mm2_min ~ atract * large_lesion + C(study_year_index) + bs(major_diameter_mm, df=4, include_intercept=False)",
+    "speed_overlap_augmented_outcome": "speed_mm2_min ~ atract + C(operator_id_public) + C(study_year_index) + bs(major_diameter_mm, df=4, include_intercept=False) + C(location_group) + C(lesion_morphology) + C(jnet_group) + mici_history + recurrence_history",
+    "binary_augmented_outcome": "C(operator_id_public) + C(study_year_index) + age_years_topcoded + C(sex) + C(asa) + anticoagulants + antiplatelets + bs(major_diameter_mm, df=4, include_intercept=False) + C(location_group) + C(lesion_morphology) + C(jnet_group) + mici_history + recurrence_history"
+  },
   "primary_speed": {
     "analysis": "primary_speed_ps_nn",
     "n_complete_case": 782,
@@ -14,13 +35,38 @@
     "ratio": 1,
     "caliper_multiplier": 0.2,
     "max_abs_smd": 0.09279768379871821,
-    "n_supported_cohort": 1916
+    "n_supported_cohort": 1916,
+    "pair_diagnostics": {
+      "n_pairs": 391,
+      "intact_small_pairs": 102,
+      "intact_large_pairs": 121,
+      "split_size_pairs": 168,
+      "same_year_pairs": 151,
+      "year_gap_le_1_pairs": 332,
+      "max_year_gap": 4,
+      "median_year_gap": 1.0,
+      "n_atract_small": 185,
+      "n_atract_large": 206,
+      "n_conventional_small": 187,
+      "n_conventional_large": 204
+    },
+    "bootstrap_iterations": 1000,
+    "bootstrap_seed": 20260622
   },
   "speed_robustness": {
     "analysis": "speed_overlap_weighting_robustness",
     "n_complete_case": 1916,
+    "n_small_lesion": 1004,
+    "n_large_lesion": 912,
     "weight_min": 0.0001,
     "weight_max": 0.9943724952659678,
+    "aipw_decomposition_overall": {
+      "n": 1916,
+      "model_contrast": 0.6044745064179465,
+      "treated_residual_correction": -0.04031966684292641,
+      "control_residual_correction": 0.06169334126940239,
+      "aipw_estimate": 0.6258481808444225
+    },
     "spec_key": "primary_jnet",
     "support_scope": "operator_only",
     "min_per_arm": 3,
@@ -32,6 +78,9 @@
       "n_complete_case": 1906,
       "weight_min": 0.0001,
       "weight_max": 0.9941655141537371,
+      "effective_sample_size": 923.2950372566281,
+      "treated_effective_sample_size": 383.22240675084134,
+      "control_effective_sample_size": 580.429675008897,
       "max_abs_weighted_smd": 0.00018011448430360491,
       "spec_key": "primary_jnet",
       "support_scope": "operator_only",
@@ -42,6 +91,9 @@
       "n_complete_case": 1935,
       "weight_min": 0.0001,
       "weight_max": 0.9944270872620069,
+      "effective_sample_size": 946.8462924998935,
+      "treated_effective_sample_size": 392.07620751350646,
+      "control_effective_sample_size": 597.3592982146482,
       "max_abs_weighted_smd": 0.00045150518159572104,
       "spec_key": "primary_jnet",
       "support_scope": "operator_only",
@@ -52,6 +104,9 @@
       "n_complete_case": 1935,
       "weight_min": 0.0001,
       "weight_max": 0.9944270872620069,
+      "effective_sample_size": 946.8462924998935,
+      "treated_effective_sample_size": 392.07620751350646,
+      "control_effective_sample_size": 597.3592982146482,
       "max_abs_weighted_smd": 0.00045150518159572104,
       "spec_key": "primary_jnet",
       "support_scope": "operator_only",

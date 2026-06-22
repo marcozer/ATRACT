@@ -1,14 +1,23 @@
 from __future__ import annotations
 
+import hashlib
 import re
 from pathlib import Path
 
 import pandas as pd
 
-from .config import BANNED_STRING_TOKENS, PUBLIC_COLUMNS
+from .config import BANNED_STRING_TOKENS, EXPECTED_PUBLIC_DATASET_SHA256, PUBLIC_COLUMNS
 
 
 DATE_PATTERN = re.compile(r"\b(?:19|20)\d{2}-\d{2}-\d{2}\b")
+
+
+def file_sha256(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def validate_public_dataset(dataframe: pd.DataFrame) -> list[str]:
@@ -39,6 +48,14 @@ def validate_public_dataset(dataframe: pd.DataFrame) -> list[str]:
 
 
 def run_release_checks(path: str | Path) -> None:
+    path = Path(path)
+    observed_checksum = file_sha256(path)
+    if observed_checksum != EXPECTED_PUBLIC_DATASET_SHA256:
+        raise ValueError(
+            "Analytic dataset checksum does not match the locked manuscript dataset.\n"
+            f"Expected: {EXPECTED_PUBLIC_DATASET_SHA256}\n"
+            f"Observed: {observed_checksum}"
+        )
     dataframe = pd.read_csv(path)
     errors = validate_public_dataset(dataframe)
     if errors:

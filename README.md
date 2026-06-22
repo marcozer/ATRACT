@@ -23,7 +23,7 @@ make analysis
 make test
 ```
 
-The deidentified analytic dataset is not distributed in this public repository. At this stage, access is available upon reasonable request to the study team and subject to local governance constraints.
+The deidentified analytic dataset is not distributed in this public repository. At this stage, access is available upon reasonable request to the study team and subject to local governance constraints. The manuscript analysis is locked to the authorized analytic dataset with SHA-256 checksum `2da50256c21f9198c963fa3042a8818faf762c574054b87358f1487e65f3089c`; `make check` fails if a different dataset is supplied.
 
 If you have authorized access to the source workbook, you can regenerate the public dataset locally:
 
@@ -80,7 +80,7 @@ The full list and source mapping are in `metadata/public_data_dictionary.csv`.
 
 The study compares adaptive traction (`ATRACT`) with conventional traction in an observational cohort. Treatment allocation was therefore not randomized and depended on operator, calendar period, and lesion complexity. For this reason, the repository does not rely on crude group comparisons or on a single adjusted regression model.
 
-The analysis is structured as a prespecified causal inference workflow. Covariates were selected a priori from a directed acyclic graph and restricted to variables plausibly known before or at the time of treatment choice. The core adjustment set includes:
+The analysis is structured as a DAG-informed, outcome-blind causal inference workflow defined before final model estimation. Covariates were selected from a directed acyclic graph and restricted to variables plausibly known before or at the time of treatment choice. The core adjustment set includes:
 
 - operator
 - calendar time
@@ -91,7 +91,7 @@ The analysis is structured as a prespecified causal inference workflow. Covariat
 - inflammatory bowel disease history
 - recurrence or scar history
 
-These variables were prespecified from a causal diagram in `metadata/dagitty_model.txt`.
+These variables are documented in `metadata/dagitty_model.txt`.
 
 Two complementary estimators are retained in the public workflow.
 
@@ -99,20 +99,23 @@ Two complementary estimators are retained in the public workflow.
 
 The primary analysis for dissection speed uses `1:1` nearest-neighbor propensity score matching without replacement.
 
-- The propensity score models the probability of receiving ATRACT conditional on the prespecified pre-treatment covariates.
-- Matching is exact on operator; calendar time is included in the propensity score model as an ordered study-year term.
-- The final caliper is selected from a prespecified grid using covariate balance and retained sample size, not significance testing.
+- The propensity score models the probability of receiving ATRACT conditional on the DAG-informed pre-treatment covariates.
+- Matching is exact on pseudonymized operator stratum; calendar time is included in the propensity score model as an ordered study-year term.
+- The final caliper is selected from a locked grid using covariate balance and retained sample size, not significance testing.
 - The retained matched sample is the largest one satisfying the locked balance criterion used in the manuscript.
 - Effect estimation in the matched cohort uses a parsimonious post-match model adjusted for calendar year and lesion size, with matched-set clustered standard errors.
+- Lesion-size subgroup estimates and the interaction estimate are derived from one interaction model.
 
 This estimator was chosen as the primary analysis because it targets the comparison of clinically comparable treated and control procedures while keeping the design transparent and auditable.
 
-### 2. Robustness analysis: overlap-weighted doubly robust analysis (`OW + DR`)
+### 2. Robustness analysis: overlap-weighted augmented inverse-probability analysis (`OW + DR`)
 
-The robustness analysis for dissection speed, and the primary analyses for binary secondary outcomes, use overlap-weighted doubly robust models.
+The robustness analysis for dissection speed, and the primary analyses for binary secondary outcomes, use overlap-weighted augmented inverse-probability estimators.
 
 - Overlap weighting emphasizes procedures with empirical support in both treatment groups and downweights observations at the tails of the propensity score distribution.
-- The doubly robust specification combines a treatment model and an outcome model.
+- The augmented specification combines the treatment-assignment model with an outcome-regression augmentation.
+- For dissection speed, the augmentation model uses the DAG-informed pre-treatment prognostic covariates rather than a post-hoc variable screen.
+- Supplementary speed robustness outputs include overlap-weighted estimates by lesion-size category and a restricted analysis among lesions measuring at least 50 mm.
 - For binary endpoints, the outcome model additionally adjusts for age, sex, ASA class, anticoagulant use, and antiplatelet use.
 
 This complementary estimator preserves a broader supported cohort and provides a robustness check under a different causal design.
@@ -125,10 +128,10 @@ The committed workflow implements:
 2. Baseline descriptive table for ATRACT versus non-ATRACT
 3. Minimal broad-cohort cleanup with exclusion of uninterpretable locations and raw location `10`
 4. Support restriction to operators with empirical data in both treatment groups
-5. Primary `1:1` nearest-neighbor propensity-score matching analysis for `speed_mm2_min`, exact on operator with calendar time handled in the PS
-6. Overlap-weighted doubly robust robustness analysis for `speed_mm2_min`
-7. Primary overlap-weighted doubly robust analyses for `r0`, `perforation`, and `delayed_bleeding`
-8. Lean supplementary diagnostics: DAG, balance table, overlap plot, and matching grid
+5. Primary `1:1` nearest-neighbor propensity-score matching analysis for `speed_mm2_min`, exact on pseudonymized operator stratum with calendar time handled in the PS
+6. Overlap-weighted augmented inverse-probability robustness analysis for `speed_mm2_min`
+7. Primary overlap-weighted augmented analyses for `r0`, `perforation`, and `delayed_bleeding`, reported as risk ratios and absolute risk differences
+8. Supplementary diagnostics: DAG, balance tables, overlap plot, matching grid, temporal sensitivity, matched-set bootstrap, continuous-size diagnostic, missingness, and result manifest
 
 ## How to read the outputs
 
@@ -142,6 +145,10 @@ The committed workflow implements:
   broad-cohort robustness analysis for dissection speed
 - `results/tables/table_s3_secondary_comparison.csv`:
   supplementary comparison table for binary outcomes
+- `results/tables/table_s4_missingness.csv` and `table_s5_population_accounting.csv`:
+  missingness and analysis-population accounting
+- `results/model_summaries/manuscript_results_manifest.csv`:
+  machine-readable map from reported estimates to generated outputs and dataset checksum
 
 The main result to look at is the matched analysis for `speed_mm2_min`. The weighted analyses for `R0`, `perforation`, and `delayed_bleeding` are secondary.
 

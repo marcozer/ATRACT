@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+EXPECTED_PUBLIC_DATASET_SHA256 = "2da50256c21f9198c963fa3042a8818faf762c574054b87358f1487e65f3089c"
 RAW_SOURCE_SHEET = "Feuil1"
 RAW_FALLBACK_SHEETS = [
     "Queries in empty cells in red",
@@ -158,6 +159,9 @@ NN_MATCH_SCOPE = "operator_only"
 PRIMARY_MATCH_CALIPER_GRID = [0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.50, 0.60]
 PRIMARY_MATCH_MAX_SMD = 0.10
 PRIMARY_MATCH_MAX_OPERATOR_SHARE = 0.60
+PRIMARY_TEMPORAL_MAX_YEAR_GAP = 1
+PRIMARY_BOOTSTRAP_ITERATIONS = 1000
+PRIMARY_BOOTSTRAP_SEED = 20260622
 
 BINARY_OUTCOMES = ["r0", "perforation", "delayed_bleeding"]
 
@@ -191,15 +195,15 @@ CAUSAL_SPECS = {
             "procedure_duration_min",
             "surface_mm2",
         ],
-        "speed_aug_rhs": (
+        "speed_matched_rhs": (
+            "C(study_year_index) + "
+            "bs(major_diameter_mm, df=4, include_intercept=False)"
+        ),
+        "speed_dr_rhs": (
             "C(operator_id_public) + C(study_year_index) + "
             "bs(major_diameter_mm, df=4, include_intercept=False) + "
             "C(location_group) + C(lesion_morphology) + C(jnet_group) + "
             "mici_history + recurrence_history"
-        ),
-        "speed_matched_rhs": (
-            "C(study_year_index) + "
-            "bs(major_diameter_mm, df=4, include_intercept=False)"
         ),
         "binary_required_columns": [
             "study_year_index",

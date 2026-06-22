@@ -1,0 +1,5 @@
+method,analysis,outcome,estimate,ci_lower,ci_upper,n_bootstrap,seed
+ps_nn_matched_set_bootstrap,overall,speed_mm2_min,2.9986546485814127,0.3701139579461314,5.559508503535232,1000,20260622
+ps_nn_matched_set_bootstrap,small_lesion_<50mm,speed_mm2_min,0.011226340507341281,-2.957735889555499,2.9926544655896823,1000,20260622
+ps_nn_matched_set_bootstrap,large_lesion_>=50mm,speed_mm2_min,5.857441818824152,1.5801720384869082,10.28088656406087,1000,20260622
+ps_nn_matched_set_bootstrap,interaction_large_lesion,speed_mm2_min,5.846215478316811,0.8788142881129641,11.27362543594624,1000,20260622

@@ -4,6 +4,16 @@ from pathlib import Path
 
 import pandas as pd
 
+from .cohort import complete_case
+from .config import (
+    BINARY_OUTCOMES,
+    CAUSAL_SPECS,
+    PRIMARY_CAUSAL_SPEC,
+    PRIMARY_OPERATOR_YEAR_MIN_PER_ARM,
+    PRIMARY_SUPPORT_SCOPE,
+    PUBLIC_COLUMNS,
+)
+
 
 VARIABLE_LABELS = {
     "age_years_topcoded": "Age, years",
@@ -65,6 +75,10 @@ def _format_mean_sd(series: pd.Series) -> str:
     return f"{series.mean():.2f} ({series.std(ddof=1):.2f})"
 
 
+def _format_median_iqr(series: pd.Series) -> str:
+    return f"{series.median():.2f} ({series.quantile(0.25):.2f}-{series.quantile(0.75):.2f})"
+
+
 def _format_count_pct(series: pd.Series, value) -> str:
     count = int(series.eq(value).sum())
     total = int(series.notna().sum())
@@ -91,6 +105,12 @@ def build_table_one(dataframe: pd.DataFrame) -> pd.DataFrame:
             {
                 "variable": f"{VARIABLE_LABELS[column]}, mean (SD)",
                 **{group_name: _format_mean_sd(group_df[column].dropna()) for group_name, group_df in groups.items()},
+            }
+        )
+        rows.append(
+            {
+                "variable": f"{VARIABLE_LABELS[column]}, median (IQR)",
+                **{group_name: _format_median_iqr(group_df[column].dropna()) for group_name, group_df in groups.items()},
             }
         )
 
@@ -135,7 +155,9 @@ def build_main_results_table(
         }
     )
 
-    speed_robustness_row = speed_robustness["effects"].copy()
+    speed_robustness_row = speed_robustness["effects"].loc[
+        speed_robustness["effects"]["analysis"].eq("overall")
+    ].copy()
     speed_robustness_row["section"] = "Speed"
     speed_robustness_row["method_label"] = "OW + DR"
     speed_robustness_row["outcome_label"] = "Overall speed"
@@ -146,19 +168,74 @@ def build_main_results_table(
     binary_effects["outcome_label"] = binary_effects["outcome"].map(OUTCOME_LABELS)
 
     combined = pd.concat([speed_effects, speed_robustness_row, binary_effects], ignore_index=True)
-    return combined[
-        [
-            "section",
-            "method_label",
-            "outcome_label",
-            "n",
-            "estimate",
-            "ci_lower",
-            "ci_upper",
-            "p_value",
-            "scale",
-        ]
+    output_columns = [
+        "section",
+        "method_label",
+        "outcome_label",
+        "n",
+        "estimate",
+        "ci_lower",
+        "ci_upper",
+        "p_value",
+        "scale",
+        "treated_n",
+        "treated_events",
+        "treated_risk_observed",
+        "control_n",
+        "control_events",
+        "control_risk_observed",
+        "treated_risk",
+        "control_risk",
+        "risk_difference",
+        "risk_difference_ci_lower",
+        "risk_difference_ci_upper",
     ]
+    return combined.reindex(columns=output_columns)
+
+
+def _support_restrict(dataframe: pd.DataFrame) -> pd.DataFrame:
+    if PRIMARY_SUPPORT_SCOPE != "operator_only":
+        raise ValueError(f"Unsupported support scope for reporting: {PRIMARY_SUPPORT_SCOPE}")
+    counts = dataframe.groupby(["operator_id_public", "atract"]).size().unstack(fill_value=0)
+    eligible = counts.index[counts.min(axis=1) >= PRIMARY_OPERATOR_YEAR_MIN_PER_ARM]
+    return dataframe.loc[dataframe["operator_id_public"].isin(eligible)].copy()
+
+
+def build_missingness_table(dataframe: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for column in PUBLIC_COLUMNS:
+        missing = int(dataframe[column].isna().sum())
+        rows.append(
+            {
+                "variable": column,
+                "missing_n": missing,
+                "missing_pct": 100 * missing / len(dataframe),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def build_population_accounting_table(dataframe: pd.DataFrame) -> pd.DataFrame:
+    spec = CAUSAL_SPECS[PRIMARY_CAUSAL_SPEC]
+    definitions = [
+        ("speed", "speed_mm2_min", list(spec["speed_required_columns"])),
+        *[(outcome, outcome, list(spec["binary_required_columns"])) for outcome in BINARY_OUTCOMES],
+    ]
+    rows = []
+    for analysis, outcome, required_columns in definitions:
+        complete = complete_case(dataframe, required_columns, outcome=outcome)
+        supported = _support_restrict(complete)
+        rows.append(
+            {
+                "analysis": analysis,
+                "public_cohort_n": int(len(dataframe)),
+                "complete_case_n": int(len(complete)),
+                "support_restricted_n": int(len(supported)),
+                "excluded_for_missingness_n": int(len(dataframe) - len(complete)),
+                "excluded_for_support_n": int(len(complete) - len(supported)),
+            }
+        )
+    return pd.DataFrame(rows)
 
 
 def write_tables(
@@ -177,6 +254,12 @@ def write_tables(
         "table_s5_binary_sensitivity.csv",
         "table_s4_speed_iptw_frontier.csv",
         "table_s5_speed_nn_frontier.csv",
+        "table_s4_missingness.csv",
+        "table_s5_population_accounting.csv",
+        "table_s6_speed_temporal_sensitivity.csv",
+        "table_s7_speed_bootstrap.csv",
+        "table_s8_binary_balance.csv",
+        "table_s9_speed_continuous_size.csv",
     ]
     for filename in stale_files:
         stale_path = tables_dir / filename
@@ -191,3 +274,12 @@ def write_tables(
     primary_speed["balance"].to_csv(tables_dir / "table_s1_balance.csv", index=False)
     speed_robustness["summary"].to_csv(tables_dir / "table_s2_speed_robustness.csv", index=False)
     binary_comparison["summary"].to_csv(tables_dir / "table_s3_secondary_comparison.csv", index=False)
+    build_missingness_table(public_dataframe).to_csv(tables_dir / "table_s4_missingness.csv", index=False)
+    build_population_accounting_table(public_dataframe).to_csv(tables_dir / "table_s5_population_accounting.csv", index=False)
+    primary_speed["temporal_sensitivity"]["summary"].to_csv(
+        tables_dir / "table_s6_speed_temporal_sensitivity.csv",
+        index=False,
+    )
+    primary_speed["bootstrap"].to_csv(tables_dir / "table_s7_speed_bootstrap.csv", index=False)
+    primary_binary["balance"].to_csv(tables_dir / "table_s8_binary_balance.csv", index=False)
+    primary_speed["continuous_size"].to_csv(tables_dir / "table_s9_speed_continuous_size.csv", index=False)

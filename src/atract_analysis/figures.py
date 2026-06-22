@@ -111,7 +111,7 @@ def plot_speed_effects(primary_speed: pd.DataFrame, speed_robustness: pd.DataFra
             "large_lesion_>=50mm": "PS-NN lesions ≥50 mm",
         }
     )
-    robustness_plot = speed_robustness.copy()
+    robustness_plot = speed_robustness.loc[speed_robustness["analysis"].eq("overall")].copy()
     robustness_plot["label"] = "OW + DR overall"
 
     plot_data = pd.concat([primary_plot, robustness_plot], ignore_index=True)
@@ -195,6 +195,49 @@ def plot_propensity_overlap(scored_frame: pd.DataFrame, output_path: Path) -> No
     plt.close(fig)
 
 
+def plot_year_gap(pair_diagnostics: pd.DataFrame, output_path: Path) -> None:
+    counts = pair_diagnostics["absolute_year_gap"].value_counts().sort_index()
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.bar(counts.index.astype(str), counts.values, color=NORD["frost_4"], edgecolor="white")
+    ax.set_xlabel("Absolute study-year gap within matched pair")
+    ax.set_ylabel("Matched pairs")
+    ax.set_title("Calendar proximity in the primary matched cohort")
+    ax.grid(axis="y", alpha=0.6)
+    _finalize_axis(ax)
+    fig.tight_layout()
+    _save_figure(fig, output_path)
+    plt.close(fig)
+
+
+def plot_continuous_size_effect(continuous_size: pd.DataFrame, output_path: Path) -> None:
+    fig, ax = plt.subplots(figsize=(7, 4))
+    ax.plot(
+        continuous_size["major_diameter_mm"],
+        continuous_size["estimate"],
+        color=NORD["frost_4"],
+        linewidth=2,
+        label="Estimated effect",
+    )
+    ax.fill_between(
+        continuous_size["major_diameter_mm"],
+        continuous_size["ci_lower"],
+        continuous_size["ci_upper"],
+        color=NORD["frost_2"],
+        alpha=0.28,
+        label="95% CI",
+    )
+    ax.axhline(0, color=NORD["muted"], linestyle="--", linewidth=1)
+    ax.set_xlabel("Major lesion diameter (mm)")
+    ax.set_ylabel("Mean difference in speed (mm²/min)")
+    ax.set_title("Matched marginal ATRACT effect by lesion size")
+    ax.legend()
+    ax.grid(axis="y", alpha=0.6)
+    _finalize_axis(ax)
+    fig.tight_layout()
+    _save_figure(fig, output_path)
+    plt.close(fig)
+
+
 def plot_dag(output_path: Path) -> None:
     fig, ax = plt.subplots(figsize=(9, 5))
     ax.axis("off")
@@ -268,6 +311,8 @@ def write_figures(
         "propensity_overlap.png",
         "speed_effects.png",
         "speed_boxplot.png",
+        "year_gap.png",
+        "continuous_size_effect.png",
     ]
     for filename in stale_files:
         stale_path = figures_dir / filename
@@ -288,3 +333,5 @@ def write_figures(
     plot_love(primary_speed["balance"], figures_dir / "figure_s1_love_plot.png")
     plot_propensity_overlap(primary_speed["scored_frame"], figures_dir / "figure_s2_propensity_overlap.png")
     plot_dag(figures_dir / "figure_s3_dag.png")
+    plot_year_gap(primary_speed["pair_diagnostics"], figures_dir / "figure_s4_year_gap.png")
+    plot_continuous_size_effect(primary_speed["continuous_size"], figures_dir / "figure_s5_continuous_size_effect.png")

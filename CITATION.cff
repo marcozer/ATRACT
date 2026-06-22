@@ -39,7 +39,7 @@ authors:
   - family-names: "Pioche"
     given-names: "Mathieu"
     affiliation: "Endoscopy and Gastroenterology Unit, Edouard Herriot Hospital, Hospices Civils de Lyon, Lyon, France"
-version: 0.1.0
-date-released: 2026-04-21
+version: 1.0.0-manuscript-submission
+date-released: 2026-06-22
 license: MIT
 url: "https://github.com/marcozer/ATRACT"

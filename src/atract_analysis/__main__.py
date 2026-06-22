@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 from .anonymize import write_public_release
-from .checks import run_release_checks
+from .checks import file_sha256, run_release_checks
 from .cohort import load_public_dataset
 from .config import REPO_ROOT
 from .models import (
@@ -25,6 +25,7 @@ def run_analysis(public_path: Path) -> None:
     from .figures import write_figures
 
     run_release_checks(public_path)
+    dataset_checksum = file_sha256(public_path)
     public_dataframe = load_public_dataset(str(public_path))
     primary_speed = run_primary_speed_analysis(public_dataframe)
     speed_robustness = run_speed_robustness_analysis(public_dataframe, primary_speed)
@@ -55,6 +56,7 @@ def run_analysis(public_path: Path) -> None:
         speed_robustness,
         primary_binary,
         binary_comparison,
+        dataset_checksum=dataset_checksum,
     )
 
 
