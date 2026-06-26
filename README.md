@@ -13,6 +13,7 @@ This repository contains the public analysis code and reproducible outputs for t
 
 - ATRACT device website: [the-atract-device.fr](https://www.atract-device.fr/the-atract-device)
 - Repository citation metadata: `CITATION.cff`
+- Reviewer-facing diagnostic note: `REVIEWER_DIAGNOSTICS.md`
 
 ## Reproducibility model
 
@@ -132,6 +133,16 @@ The committed workflow implements:
 6. Overlap-weighted augmented inverse-probability robustness analysis for `speed_mm2_min`
 7. Primary overlap-weighted augmented analyses for `r0`, `perforation`, and `delayed_bleeding`, reported as risk ratios and absolute risk differences
 8. Supplementary diagnostics: DAG, balance tables, overlap plot, matching grid, temporal sensitivity, matched-set bootstrap, continuous-size diagnostic, operator-year distributions, matched/unmatched cohort profiles, missingness, and result manifest
+
+## Reviewer Diagnostic Update
+
+The latest reviewer-diagnostic update adds transparent supplementary outputs for three methodologic issues:
+
+- Operator and calendar-time structure: distributions of ATRACT and conventional traction by operator-year, crude speed by operator-year, operator adoption timing, and post-adoption temporal sensitivity.
+- Matched estimand transparency: treatment-group characteristics of the matched cohort and a profile of procedures eligible for speed analysis but not retained after matching.
+- Missingness and clustering: missingness by treatment group and an aggregate private check showing that patient-level multiplicity is negligible in the cleaned cohort.
+
+The detailed map between reviewer questions, outputs, and interpretation is in `REVIEWER_DIAGNOSTICS.md`.
 
 ## How to read the outputs
 
