@@ -7,6 +7,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import numpy as np
 import pandas as pd
 
@@ -238,6 +239,87 @@ def plot_continuous_size_effect(continuous_size: pd.DataFrame, output_path: Path
     plt.close(fig)
 
 
+def _operator_year_summary(dataframe: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for (operator_id, year), group in dataframe.groupby(["operator_id_public", "study_year_index"], sort=True):
+        rows.append(
+            {
+                "operator_id_public": operator_id,
+                "study_year_index": int(year),
+                "total_n": int(len(group)),
+                "atract_pct": float(100 * group["atract"].eq(1).mean()),
+                "speed_median": float(group["speed_mm2_min"].median()) if group["speed_mm2_min"].notna().any() else np.nan,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def plot_operator_year_treatment(dataframe: pd.DataFrame, output_path: Path) -> None:
+    summary = _operator_year_summary(dataframe)
+    operators = sorted(summary["operator_id_public"].unique())
+    years = sorted(summary["study_year_index"].unique())
+    y_map = {operator_id: index for index, operator_id in enumerate(operators)}
+
+    fig, ax = plt.subplots(figsize=(8, 4.8))
+    cmap = LinearSegmentedColormap.from_list("nord_treatment", [NORD["frost_2"], NORD["frost_4"]])
+    scatter = ax.scatter(
+        summary["study_year_index"],
+        summary["operator_id_public"].map(y_map),
+        s=summary["total_n"].clip(lower=1) * 9,
+        c=summary["atract_pct"],
+        cmap=cmap,
+        vmin=0,
+        vmax=100,
+        edgecolor="white",
+        linewidth=0.7,
+    )
+    ax.set_xticks(years)
+    ax.set_yticks(range(len(operators)))
+    ax.set_yticklabels(operators)
+    ax.set_xlabel("Study-year index")
+    ax.set_ylabel("Operator stratum")
+    ax.set_title("ATRACT use by operator and study year")
+    colorbar = fig.colorbar(scatter, ax=ax, pad=0.02)
+    colorbar.set_label("ATRACT procedures (%)")
+    ax.grid(alpha=0.35)
+    _finalize_axis(ax)
+    fig.tight_layout()
+    _save_figure(fig, output_path)
+    plt.close(fig)
+
+
+def plot_operator_year_speed(dataframe: pd.DataFrame, output_path: Path) -> None:
+    summary = _operator_year_summary(dataframe).dropna(subset=["speed_median"])
+    operators = sorted(summary["operator_id_public"].unique())
+    years = sorted(summary["study_year_index"].unique())
+    y_map = {operator_id: index for index, operator_id in enumerate(operators)}
+
+    fig, ax = plt.subplots(figsize=(8, 4.8))
+    cmap = LinearSegmentedColormap.from_list("nord_speed", [NORD["frost_1"], NORD["frost_3"], NORD["frost_4"]])
+    scatter = ax.scatter(
+        summary["study_year_index"],
+        summary["operator_id_public"].map(y_map),
+        s=summary["total_n"].clip(lower=1) * 9,
+        c=summary["speed_median"],
+        cmap=cmap,
+        edgecolor="white",
+        linewidth=0.7,
+    )
+    ax.set_xticks(years)
+    ax.set_yticks(range(len(operators)))
+    ax.set_yticklabels(operators)
+    ax.set_xlabel("Study-year index")
+    ax.set_ylabel("Operator stratum")
+    ax.set_title("Crude median dissection speed by operator and study year")
+    colorbar = fig.colorbar(scatter, ax=ax, pad=0.02)
+    colorbar.set_label("Median speed (mm²/min)")
+    ax.grid(alpha=0.35)
+    _finalize_axis(ax)
+    fig.tight_layout()
+    _save_figure(fig, output_path)
+    plt.close(fig)
+
+
 def plot_dag(output_path: Path) -> None:
     fig, ax = plt.subplots(figsize=(9, 5))
     ax.axis("off")
@@ -313,6 +395,8 @@ def write_figures(
         "speed_boxplot.png",
         "year_gap.png",
         "continuous_size_effect.png",
+        "operator_year_treatment.png",
+        "operator_year_speed.png",
     ]
     for filename in stale_files:
         stale_path = figures_dir / filename
@@ -335,3 +419,5 @@ def write_figures(
     plot_dag(figures_dir / "figure_s3_dag.png")
     plot_year_gap(primary_speed["pair_diagnostics"], figures_dir / "figure_s4_year_gap.png")
     plot_continuous_size_effect(primary_speed["continuous_size"], figures_dir / "figure_s5_continuous_size_effect.png")
+    plot_operator_year_treatment(public_dataframe, figures_dir / "figure_s6_operator_year_treatment.png")
+    plot_operator_year_speed(public_dataframe, figures_dir / "figure_s7_operator_year_speed.png")

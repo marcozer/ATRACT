@@ -5,7 +5,7 @@ PUBLIC_DATA := data/public/atract_analysis_public.csv
 DICT_PATH := metadata/public_data_dictionary.csv
 RAW_PATH ?= $(ATRACT_RAW_XLSX)
 
-.PHONY: public-data analysis all test check
+.PHONY: public-data analysis all test check private-diagnostics
 
 public-data:
 	@if [ -z "$(RAW_PATH)" ]; then echo "ATRACT_RAW_XLSX must point to the local raw workbook"; exit 1; fi
@@ -23,6 +23,10 @@ all:
 
 check:
 	PYTHONPATH=$(PYTHONPATH) MPLCONFIGDIR=$(MPLCONFIGDIR) $(PYTHON) -m atract_analysis check --input "$(PUBLIC_DATA)"
+
+private-diagnostics:
+	@if [ -z "$(RAW_PATH)" ]; then echo "ATRACT_RAW_XLSX must point to the local raw workbook"; exit 1; fi
+	PYTHONPATH=$(PYTHONPATH) MPLCONFIGDIR=$(MPLCONFIGDIR) $(PYTHON) -m atract_analysis private-diagnostics --raw "$(RAW_PATH)" --input "$(PUBLIC_DATA)"
 
 test:
 	PYTHONPATH=$(PYTHONPATH) MPLCONFIGDIR=$(MPLCONFIGDIR) $(PYTHON) -m unittest discover -s tests -v

@@ -131,7 +131,7 @@ The committed workflow implements:
 5. Primary `1:1` nearest-neighbor propensity-score matching analysis for `speed_mm2_min`, exact on pseudonymized operator stratum with calendar time handled in the PS
 6. Overlap-weighted augmented inverse-probability robustness analysis for `speed_mm2_min`
 7. Primary overlap-weighted augmented analyses for `r0`, `perforation`, and `delayed_bleeding`, reported as risk ratios and absolute risk differences
-8. Supplementary diagnostics: DAG, balance tables, overlap plot, matching grid, temporal sensitivity, matched-set bootstrap, continuous-size diagnostic, missingness, and result manifest
+8. Supplementary diagnostics: DAG, balance tables, overlap plot, matching grid, temporal sensitivity, matched-set bootstrap, continuous-size diagnostic, operator-year distributions, matched/unmatched cohort profiles, missingness, and result manifest
 
 ## How to read the outputs
 
@@ -147,8 +147,16 @@ The committed workflow implements:
   supplementary comparison table for binary outcomes
 - `results/tables/table_s4_missingness.csv` and `table_s5_population_accounting.csv`:
   missingness and analysis-population accounting
+- `results/tables/table_s10_operator_year_distribution.csv` and `table_s11_operator_adoption.csv`:
+  ATRACT/conventional distributions and crude speed summaries by operator and study year
+- `results/tables/table_s12_matched_characteristics.csv` and `table_s13_unmatched_profile.csv`:
+  characteristics of the primary matched cohort and the speed-support procedures not retained by matching
+- `results/tables/table_s14_missingness_by_group.csv`:
+  missingness by treatment group
 - `results/model_summaries/manuscript_results_manifest.csv`:
   machine-readable map from reported estimates to generated outputs and dataset checksum
+
+`results/model_summaries/patient_multiplicity_private_summary.csv` is an aggregate, non-identifying diagnostic generated from the private source workbook with `make private-diagnostics`. It is not generated from the public analytic CSV because patient identifiers are intentionally excluded from public data.
 
 The main result to look at is the matched analysis for `speed_mm2_min`. The weighted analyses for `R0`, `perforation`, and `delayed_bleeding` are secondary.
 

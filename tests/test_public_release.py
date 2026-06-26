@@ -13,6 +13,12 @@ from atract_analysis.models import (
     run_primary_speed_analysis,
     run_speed_robustness_analysis,
 )
+from atract_analysis.tables import (
+    build_missingness_by_group_table,
+    build_operator_adoption_table,
+    build_operator_year_distribution_table,
+    build_unmatched_profile_table,
+)
 
 
 PUBLIC_DATA_PATH = REPO_ROOT / "data" / "public" / "atract_analysis_public.csv"
@@ -78,6 +84,8 @@ class PublicReleaseTests(unittest.TestCase):
         )
         self.assertIn("matched_frame", primary_speed)
         self.assertIn("scored_frame", primary_speed)
+        self.assertIn("_analysis_row_id", primary_speed["scored_frame"].columns)
+        self.assertIn("_analysis_row_id", primary_speed["matched_frame"].columns)
         self.assertGreater(len(primary_speed["matched_frame"]), 0)
         self.assertGreater(len(primary_speed["matching_grid"]), 0)
         self.assertEqual(primary_speed["metadata"]["support_scope"], "operator_only")
@@ -101,6 +109,7 @@ class PublicReleaseTests(unittest.TestCase):
         self.assertEqual(primary_speed["metadata"]["pair_diagnostics"]["year_gap_le_1_pairs"], 332)
         self.assertEqual(set(primary_speed["temporal_sensitivity"]["summary"]["sensitivity"]), {
             "existing_pairs_year_gap_le_1",
+            "rematched_post_adoption_period",
             "rematched_year_gap_le_1",
         })
         self.assertEqual(len(primary_speed["bootstrap"]), 4)
@@ -115,6 +124,21 @@ class PublicReleaseTests(unittest.TestCase):
         self.assertLess(primary_speed["metadata"]["max_abs_smd"], 0.10)
         self.assertIn("small_lesion_<50mm", set(primary_speed["effects"]["analysis"]))
         self.assertIn("large_lesion_>=50mm", set(primary_speed["effects"]["analysis"]))
+
+        unmatched_profile = build_unmatched_profile_table(primary_speed["scored_frame"], primary_speed["matched_frame"])
+        unmatched_n = unmatched_profile.loc[unmatched_profile["variable"].eq("n"), "overall"].iloc[0]
+        self.assertEqual(unmatched_n, "1134")
+
+        operator_year = build_operator_year_distribution_table(public_df)
+        self.assertIn("atract_pct", operator_year.columns)
+        self.assertIn("speed_atract_median", operator_year.columns)
+
+        adoption = build_operator_adoption_table(public_df)
+        self.assertIn("operator_category_note", adoption.columns)
+        self.assertIn("operator_other", set(adoption["operator_id_public"]))
+
+        missingness_by_group = build_missingness_by_group_table(public_df)
+        self.assertEqual(set(["overall", "conventional", "atract"]).issubset(missingness_by_group.columns), True)
 
 
 if __name__ == "__main__":

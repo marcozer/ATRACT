@@ -86,6 +86,33 @@ def _format_count_pct(series: pd.Series, value) -> str:
     return f"{count} ({pct:.1f}%)"
 
 
+def _format_missing(series: pd.Series) -> str:
+    missing = int(series.isna().sum())
+    pct = 100 * missing / len(series) if len(series) else 0
+    return f"{missing} ({pct:.1f}%)"
+
+
+def _summarize_speed(series: pd.Series, prefix: str) -> dict[str, float | int]:
+    observed = series.dropna()
+    if observed.empty:
+        return {
+            f"{prefix}_n": 0,
+            f"{prefix}_mean": pd.NA,
+            f"{prefix}_sd": pd.NA,
+            f"{prefix}_median": pd.NA,
+            f"{prefix}_iqr_q1": pd.NA,
+            f"{prefix}_iqr_q3": pd.NA,
+        }
+    return {
+        f"{prefix}_n": int(observed.size),
+        f"{prefix}_mean": float(observed.mean()),
+        f"{prefix}_sd": float(observed.std(ddof=1)) if observed.size > 1 else pd.NA,
+        f"{prefix}_median": float(observed.median()),
+        f"{prefix}_iqr_q1": float(observed.quantile(0.25)),
+        f"{prefix}_iqr_q3": float(observed.quantile(0.75)),
+    }
+
+
 def build_table_one(dataframe: pd.DataFrame) -> pd.DataFrame:
     groups = {
         "overall": dataframe,
@@ -135,6 +162,72 @@ def build_table_one(dataframe: pd.DataFrame) -> pd.DataFrame:
                     **{group_name: _format_count_pct(group_df[column], level) for group_name, group_df in groups.items()},
                 }
             )
+    return pd.DataFrame(rows)
+
+
+def build_matched_characteristics_table(matched: pd.DataFrame) -> pd.DataFrame:
+    table = build_table_one(matched)
+    table.insert(0, "population", "primary_matched_speed_cohort")
+    return table
+
+
+def build_unmatched_profile_table(scored: pd.DataFrame, matched: pd.DataFrame) -> pd.DataFrame:
+    matched_ids = set(matched["_analysis_row_id"].dropna().astype(int))
+    unmatched = scored.loc[~scored["_analysis_row_id"].astype(int).isin(matched_ids)].copy()
+    table = build_table_one(unmatched)
+    table.insert(0, "population", "speed_support_cohort_not_matched")
+    return table
+
+
+def build_operator_year_distribution_table(dataframe: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    grouped = dataframe.groupby(["study_year_index", "operator_id_public"], dropna=False, sort=True)
+    for (year, operator_id), group in grouped:
+        control = group.loc[group["atract"].eq(0)]
+        treated = group.loc[group["atract"].eq(1)]
+        row = {
+            "study_year_index": int(year) if pd.notna(year) else pd.NA,
+            "operator_id_public": operator_id,
+            "total_n": int(len(group)),
+            "conventional_n": int(len(control)),
+            "atract_n": int(len(treated)),
+            "atract_pct": float(100 * len(treated) / len(group)) if len(group) else 0.0,
+        }
+        row.update(_summarize_speed(group["speed_mm2_min"], "speed_overall"))
+        row.update(_summarize_speed(control["speed_mm2_min"], "speed_conventional"))
+        row.update(_summarize_speed(treated["speed_mm2_min"], "speed_atract"))
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def build_operator_adoption_table(dataframe: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    first_atract_year = dataframe.loc[dataframe["atract"].eq(1)].groupby("operator_id_public")["study_year_index"].min()
+    for operator_id, group in dataframe.groupby("operator_id_public", sort=True):
+        first_year = first_atract_year.get(operator_id, pd.NA)
+        if pd.isna(first_year):
+            before = group.copy()
+            after = group.iloc[0:0].copy()
+        else:
+            before = group.loc[group["study_year_index"].lt(first_year)]
+            after = group.loc[group["study_year_index"].ge(first_year)]
+        rows.append(
+            {
+                "operator_id_public": operator_id,
+                "first_atract_study_year_index": int(first_year) if pd.notna(first_year) else pd.NA,
+                "total_n": int(len(group)),
+                "conventional_before_adoption_n": int(before["atract"].eq(0).sum()),
+                "atract_before_adoption_n": int(before["atract"].eq(1).sum()),
+                "conventional_from_adoption_n": int(after["atract"].eq(0).sum()),
+                "atract_from_adoption_n": int(after["atract"].eq(1).sum()),
+                "total_from_adoption_n": int(len(after)),
+                "operator_category_note": (
+                    "Grouped heterogeneous operator stratum"
+                    if operator_id == "operator_other"
+                    else "Individual pseudonymized operator stratum"
+                ),
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -215,6 +308,23 @@ def build_missingness_table(dataframe: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def build_missingness_by_group_table(dataframe: pd.DataFrame) -> pd.DataFrame:
+    groups = {
+        "overall": dataframe,
+        "conventional": dataframe.loc[dataframe["atract"].eq(0)],
+        "atract": dataframe.loc[dataframe["atract"].eq(1)],
+    }
+    rows = []
+    for column in PUBLIC_COLUMNS:
+        rows.append(
+            {
+                "variable": column,
+                **{group_name: _format_missing(group_df[column]) for group_name, group_df in groups.items()},
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 def build_population_accounting_table(dataframe: pd.DataFrame) -> pd.DataFrame:
     spec = CAUSAL_SPECS[PRIMARY_CAUSAL_SPEC]
     definitions = [
@@ -260,6 +370,11 @@ def write_tables(
         "table_s7_speed_bootstrap.csv",
         "table_s8_binary_balance.csv",
         "table_s9_speed_continuous_size.csv",
+        "table_s10_operator_year_distribution.csv",
+        "table_s11_operator_adoption.csv",
+        "table_s12_matched_characteristics.csv",
+        "table_s13_unmatched_profile.csv",
+        "table_s14_missingness_by_group.csv",
     ]
     for filename in stale_files:
         stale_path = tables_dir / filename
@@ -283,3 +398,23 @@ def write_tables(
     primary_speed["bootstrap"].to_csv(tables_dir / "table_s7_speed_bootstrap.csv", index=False)
     primary_binary["balance"].to_csv(tables_dir / "table_s8_binary_balance.csv", index=False)
     primary_speed["continuous_size"].to_csv(tables_dir / "table_s9_speed_continuous_size.csv", index=False)
+    build_operator_year_distribution_table(public_dataframe).to_csv(
+        tables_dir / "table_s10_operator_year_distribution.csv",
+        index=False,
+    )
+    build_operator_adoption_table(public_dataframe).to_csv(
+        tables_dir / "table_s11_operator_adoption.csv",
+        index=False,
+    )
+    build_matched_characteristics_table(primary_speed["matched_frame"]).to_csv(
+        tables_dir / "table_s12_matched_characteristics.csv",
+        index=False,
+    )
+    build_unmatched_profile_table(primary_speed["scored_frame"], primary_speed["matched_frame"]).to_csv(
+        tables_dir / "table_s13_unmatched_profile.csv",
+        index=False,
+    )
+    build_missingness_by_group_table(public_dataframe).to_csv(
+        tables_dir / "table_s14_missingness_by_group.csv",
+        index=False,
+    )

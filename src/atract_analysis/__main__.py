@@ -14,6 +14,7 @@ from .models import (
     run_speed_robustness_analysis,
     write_model_outputs,
 )
+from .private_diagnostics import write_private_diagnostics
 from .tables import write_tables
 
 
@@ -60,6 +61,18 @@ def run_analysis(public_path: Path) -> None:
     )
 
 
+def run_private_diagnostics(public_path: Path, raw_path: Path, output_path: Path) -> None:
+    run_release_checks(public_path)
+    public_dataframe = load_public_dataset(str(public_path))
+    primary_speed = run_primary_speed_analysis(public_dataframe, bootstrap_iterations=2)
+    write_private_diagnostics(
+        raw_path,
+        output_path,
+        public_dataframe=public_dataframe,
+        primary_speed=primary_speed,
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="ATRACT public statistical analysis")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -74,6 +87,18 @@ def build_parser() -> argparse.ArgumentParser:
 
     check = subparsers.add_parser("check", help="Run release checks against the public dataset")
     check.add_argument("--input", default=_default_public_path(), type=Path)
+
+    private_diagnostics = subparsers.add_parser(
+        "private-diagnostics",
+        help="Generate non-identifying aggregate diagnostics that require the private raw workbook",
+    )
+    private_diagnostics.add_argument("--raw", required=True, type=Path)
+    private_diagnostics.add_argument("--input", default=_default_public_path(), type=Path)
+    private_diagnostics.add_argument(
+        "--output",
+        default=REPO_ROOT / "results" / "model_summaries" / "patient_multiplicity_private_summary.csv",
+        type=Path,
+    )
 
     all_cmd = subparsers.add_parser("all", help="Regenerate the public dataset if requested, then run analysis")
     all_cmd.add_argument("--raw", type=Path, default=None)
@@ -96,6 +121,10 @@ def main() -> None:
 
     if args.command == "check":
         run_release_checks(args.input)
+        return
+
+    if args.command == "private-diagnostics":
+        run_private_diagnostics(args.input, args.raw, args.output)
         return
 
     if args.command == "all":

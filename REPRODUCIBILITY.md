@@ -47,6 +47,14 @@ ATRACT_RAW_XLSX=/absolute/path/to/base24.xlsx make public-data
 make analysis
 ```
 
+Generate aggregate patient-multiplicity diagnostics from the private workbook:
+
+```bash
+ATRACT_RAW_XLSX=/absolute/path/to/base24.xlsx make private-diagnostics
+```
+
+This target exports only non-identifying aggregate counts. Patient identifiers are not written to the public dataset.
+
 ## Outputs
 
 Generated outputs are written to:
@@ -58,3 +66,5 @@ Generated outputs are written to:
 `results/model_summaries/analysis_metadata.json` records dataset checksum, software versions, propensity-score formula, outcome formulas, selected caliper, matching diagnostics, and bootstrap settings.
 
 `results/model_summaries/manuscript_results_manifest.csv` links reported estimates to generated output files.
+
+`results/model_summaries/patient_multiplicity_private_summary.csv` is generated only when the private workbook is available.

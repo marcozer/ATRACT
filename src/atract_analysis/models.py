@@ -128,11 +128,14 @@ def _restrict_support(dataframe: pd.DataFrame, scope: str, min_per_arm: int) -> 
 
 def _analysis_cohort(dataframe: pd.DataFrame, *, required_columns: list[str], outcome: str) -> pd.DataFrame:
     complete = complete_case(dataframe, required_columns, outcome=outcome)
-    return _restrict_support(
+    supported = _restrict_support(
         complete,
         scope=PRIMARY_SUPPORT_SCOPE,
         min_per_arm=PRIMARY_OPERATOR_YEAR_MIN_PER_ARM,
     )
+    supported = supported.copy()
+    supported["_analysis_row_id"] = supported.index.astype(int)
+    return supported
 
 
 def _prepare_propensity_formula(dataframe: pd.DataFrame, rhs: str, ps_structure: str) -> tuple[pd.DataFrame, str]:
@@ -741,10 +744,26 @@ def _run_temporal_speed_sensitivity(
     rematched_effects["max_abs_smd"] = float(rematched_balance["adjusted_smd"].abs().max())
     rematched_effects["n_match_groups"] = int(rematched["_match_group"].nunique())
 
-    summary = pd.concat([restricted_effects, rematched_effects], ignore_index=True)
+    first_atract_year = scored.loc[scored["atract"].eq(1)].groupby("operator_id_public")["study_year_index"].min()
+    contemporary = scored.loc[
+        scored["study_year_index"].ge(scored["operator_id_public"].map(first_atract_year))
+    ].copy()
+    contemporary_matched, contemporary_balance, contemporary_grid, contemporary_caliper = _select_matched_design(
+        contemporary,
+        balance_covariates=balance_covariates,
+    )
+    contemporary_effects, _ = _fit_primary_speed_models(contemporary_matched, augment_rhs)
+    contemporary_effects["sensitivity"] = "rematched_post_adoption_period"
+    contemporary_effects["caliper_multiplier"] = float(contemporary_caliper)
+    contemporary_effects["max_abs_smd"] = float(contemporary_balance["adjusted_smd"].abs().max())
+    contemporary_effects["n_match_groups"] = int(contemporary_matched["_match_group"].nunique())
+    contemporary_effects["contemporary_supported_n"] = int(len(contemporary))
+
+    summary = pd.concat([restricted_effects, rematched_effects, contemporary_effects], ignore_index=True)
     return {
         "summary": summary,
         "rematching_grid": rematching_grid,
+        "contemporary_rematching_grid": contemporary_grid,
     }
 
 
@@ -1198,6 +1217,7 @@ def write_model_outputs(
         "matched_pair_diagnostics.csv",
         "speed_temporal_sensitivity.csv",
         "speed_temporal_rematching_grid.csv",
+        "speed_contemporary_rematching_grid.csv",
         "speed_bootstrap_results.csv",
         "speed_continuous_size_effects.csv",
         "binary_balance_diagnostics.csv",
@@ -1223,6 +1243,10 @@ def write_model_outputs(
     primary_speed["temporal_sensitivity"]["summary"].to_csv(results_dir / "speed_temporal_sensitivity.csv", index=False)
     primary_speed["temporal_sensitivity"]["rematching_grid"].to_csv(
         results_dir / "speed_temporal_rematching_grid.csv",
+        index=False,
+    )
+    primary_speed["temporal_sensitivity"]["contemporary_rematching_grid"].to_csv(
+        results_dir / "speed_contemporary_rematching_grid.csv",
         index=False,
     )
     primary_speed["bootstrap"].to_csv(results_dir / "speed_bootstrap_results.csv", index=False)

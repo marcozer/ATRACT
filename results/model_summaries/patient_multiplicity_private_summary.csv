@@ -1,0 +1,4 @@
+population,rows_n,patient_id_missing_n,unique_patient_ids_n,repeated_patient_ids_n,rows_in_repeated_patient_ids_n,max_rows_per_patient_id
+cleaned_public_cohort,2003,0,2002,1,2,2
+speed_supported_cohort,1916,0,1915,1,2,2
+primary_matched_speed_cohort,782,0,782,0,0,1

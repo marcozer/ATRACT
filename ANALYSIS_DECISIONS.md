@@ -33,4 +33,8 @@ R0 resection, intraprocedural perforation, and delayed bleeding are analyzed wit
 
 ## Supplementary diagnostics
 
-The workflow exports matching balance, propensity overlap, matched-pair calendar gaps, temporal sensitivity, matched-set bootstrap intervals, continuous lesion-size diagnostics, missingness, and population accounting.
+The workflow exports matching balance, propensity overlap, matched-pair calendar gaps, temporal sensitivity, matched-set bootstrap intervals, continuous lesion-size diagnostics, operator-year treatment distributions, crude operator-year speed summaries, matched/unmatched cohort profiles, missingness, and population accounting.
+
+## Patient-level clustering
+
+The public analytic dataset intentionally excludes patient identifiers. A private aggregate diagnostic based on the source workbook found 2002 unique patient identifiers among 2003 cleaned procedures, with one patient contributing two procedures. The primary matched speed cohort contained no repeated patient identifier. This supports the retained matched-set clustered inference for the public analysis; patient identifiers remain unavailable in the public repository.
