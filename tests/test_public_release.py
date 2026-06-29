@@ -112,6 +112,18 @@ class PublicReleaseTests(unittest.TestCase):
             "rematched_post_adoption_period",
             "rematched_year_gap_le_1",
         })
+        temporal_relaxation = primary_speed["temporal_relaxation_grid"]
+        self.assertEqual(set(temporal_relaxation["sensitivity"]), {
+            "rematched_year_gap_le_1",
+            "rematched_year_gap_le_2",
+            "rematched_year_gap_le_3",
+            "no_year_gap_restriction",
+        })
+        relaxed_large = temporal_relaxation.loc[
+            temporal_relaxation["sensitivity"].eq("rematched_year_gap_le_2")
+            & temporal_relaxation["analysis"].eq("large_lesion_>=50mm")
+        ].iloc[0]
+        self.assertEqual(relaxed_large["treated_large_matched_n"], 206)
         self.assertEqual(len(primary_speed["bootstrap"]), 4)
         self.assertGreater(len(primary_speed["continuous_size"]), 0)
         self.assertEqual(set(primary_binary["effects"]["outcome"]), {"r0", "perforation", "delayed_bleeding"})

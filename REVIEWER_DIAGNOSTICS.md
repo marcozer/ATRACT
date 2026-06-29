@@ -19,10 +19,13 @@ Temporal sensitivity outputs:
 - `results/model_summaries/speed_temporal_sensitivity.csv`: machine-readable version of the same estimates.
 - `results/model_summaries/speed_temporal_rematching_grid.csv`: rematching grid with year-gap restriction.
 - `results/model_summaries/speed_contemporary_rematching_grid.csv`: rematching grid restricted to the post-adoption period.
+- `results/model_summaries/speed_temporal_relaxation_grid.csv`: speed estimates and large-lesion retention under progressively relaxed calendar-gap constraints.
+- `results/tables/table_s15_speed_temporal_relaxation_grid.csv`: manuscript-facing version of the temporal-relaxation grid.
 
 Interpretation for the manuscript:
 
 - Calendar time and operator are not ignored; they are handled in the propensity score and examined in supplementary diagnostics.
+- Relaxing the calendar-gap constraint can be reported as a sensitivity analysis; it should not be tuned on p-values.
 - The post-adoption diagnostic is descriptive/sensitivity evidence, not a replacement for the primary matched analysis.
 - `operator_other` is explicitly identified as a grouped heterogeneous stratum and should be discussed as a limitation.
 

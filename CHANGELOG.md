@@ -6,6 +6,7 @@
 - Added operator-year ATRACT/conventional distributions and crude speed summaries in `table_s10_operator_year_distribution.csv`.
 - Added operator adoption-period summaries in `table_s11_operator_adoption.csv`, including explicit identification of `operator_other` as a grouped heterogeneous operator stratum.
 - Added temporal diagnostic outputs for the post-adoption period and existing/rematched calendar-proximity analyses.
+- Added `table_s15_speed_temporal_relaxation_grid.csv` and `speed_temporal_relaxation_grid.csv` to document matched speed estimates under progressively relaxed calendar-gap constraints.
 - Added matched-cohort characteristics by treatment group in `table_s12_matched_characteristics.csv`.
 - Added a profile of speed-support procedures not retained by matching in `table_s13_unmatched_profile.csv`.
 - Added missingness by treatment group in `table_s14_missingness_by_group.csv`.

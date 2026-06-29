@@ -375,6 +375,7 @@ def write_tables(
         "table_s12_matched_characteristics.csv",
         "table_s13_unmatched_profile.csv",
         "table_s14_missingness_by_group.csv",
+        "table_s15_speed_temporal_relaxation_grid.csv",
     ]
     for filename in stale_files:
         stale_path = tables_dir / filename
@@ -416,5 +417,9 @@ def write_tables(
     )
     build_missingness_by_group_table(public_dataframe).to_csv(
         tables_dir / "table_s14_missingness_by_group.csv",
+        index=False,
+    )
+    primary_speed["temporal_relaxation_grid"].to_csv(
+        tables_dir / "table_s15_speed_temporal_relaxation_grid.csv",
         index=False,
     )

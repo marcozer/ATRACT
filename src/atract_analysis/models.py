@@ -30,6 +30,7 @@ from .config import (
     PRIMARY_OPERATOR_YEAR_MIN_PER_ARM,
     PRIMARY_PS_STRUCTURE,
     PRIMARY_SUPPORT_SCOPE,
+    PRIMARY_TEMPORAL_RELAXATION_YEAR_GAPS,
     PRIMARY_TEMPORAL_MAX_YEAR_GAP,
 )
 
@@ -767,6 +768,49 @@ def _run_temporal_speed_sensitivity(
     }
 
 
+def _run_temporal_relaxation_grid(
+    scored: pd.DataFrame,
+    augment_rhs: str,
+    balance_covariates: list[str],
+) -> pd.DataFrame:
+    rows = []
+    scored = add_large_lesion_flag(scored)
+    for max_year_gap in PRIMARY_TEMPORAL_RELAXATION_YEAR_GAPS:
+        matched, balance, _, selected_caliper = _select_matched_design(
+            scored,
+            balance_covariates=balance_covariates,
+            max_year_gap=max_year_gap,
+        )
+        matched = add_large_lesion_flag(matched)
+        effects, _ = _fit_primary_speed_models(matched, augment_rhs)
+        matched_ids = set(matched["_analysis_row_id"].astype(int))
+        unmatched = scored.loc[~scored["_analysis_row_id"].astype(int).isin(matched_ids)].copy()
+        unmatched_treated = unmatched.loc[unmatched["atract"].eq(1)]
+        matched_treated = matched.loc[matched["atract"].eq(1)]
+        sensitivity = "no_year_gap_restriction" if max_year_gap is None else f"rematched_year_gap_le_{max_year_gap}"
+        for _, effect in effects.iterrows():
+            rows.append(
+                {
+                    "sensitivity": sensitivity,
+                    "max_year_gap": pd.NA if max_year_gap is None else int(max_year_gap),
+                    "selected_caliper": float(selected_caliper),
+                    "n_pairs": int(matched["_match_group"].nunique()),
+                    "n": int(len(matched)),
+                    "max_abs_smd": float(balance["adjusted_smd"].abs().max()),
+                    "treated_large_matched_n": int(matched_treated["large_lesion"].sum()),
+                    "treated_large_unmatched_n": int(unmatched_treated["large_lesion"].sum()),
+                    "treated_unmatched_n": int(len(unmatched_treated)),
+                    "analysis": effect["analysis"],
+                    "estimate": float(effect["estimate"]),
+                    "ci_lower": float(effect["ci_lower"]),
+                    "ci_upper": float(effect["ci_upper"]),
+                    "p_value": float(effect["p_value"]),
+                    "scale": effect["scale"],
+                }
+            )
+    return pd.DataFrame(rows)
+
+
 def run_primary_speed_analysis(
     dataframe: pd.DataFrame,
     *,
@@ -794,6 +838,11 @@ def run_primary_speed_analysis(
     temporal_sensitivity = _run_temporal_speed_sensitivity(
         scored,
         matched_frame,
+        str(spec["speed_matched_rhs"]),
+        list(spec["balance_covariates"]),
+    )
+    temporal_relaxation_grid = _run_temporal_relaxation_grid(
+        scored,
         str(spec["speed_matched_rhs"]),
         list(spec["balance_covariates"]),
     )
@@ -829,6 +878,7 @@ def run_primary_speed_analysis(
         "matching_grid": matching_grid,
         "pair_diagnostics": pair_diagnostics,
         "temporal_sensitivity": temporal_sensitivity,
+        "temporal_relaxation_grid": temporal_relaxation_grid,
         "bootstrap": bootstrap_results,
         "continuous_size": continuous_size,
         "metadata": metadata,
@@ -1218,6 +1268,7 @@ def write_model_outputs(
         "speed_temporal_sensitivity.csv",
         "speed_temporal_rematching_grid.csv",
         "speed_contemporary_rematching_grid.csv",
+        "speed_temporal_relaxation_grid.csv",
         "speed_bootstrap_results.csv",
         "speed_continuous_size_effects.csv",
         "binary_balance_diagnostics.csv",
@@ -1247,6 +1298,10 @@ def write_model_outputs(
     )
     primary_speed["temporal_sensitivity"]["contemporary_rematching_grid"].to_csv(
         results_dir / "speed_contemporary_rematching_grid.csv",
+        index=False,
+    )
+    primary_speed["temporal_relaxation_grid"].to_csv(
+        results_dir / "speed_temporal_relaxation_grid.csv",
         index=False,
     )
     primary_speed["bootstrap"].to_csv(results_dir / "speed_bootstrap_results.csv", index=False)

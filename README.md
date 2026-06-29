@@ -164,6 +164,8 @@ The detailed map between reviewer questions, outputs, and interpretation is in `
   characteristics of the primary matched cohort and the speed-support procedures not retained by matching
 - `results/tables/table_s14_missingness_by_group.csv`:
   missingness by treatment group
+- `results/tables/table_s15_speed_temporal_relaxation_grid.csv`:
+  matched speed estimates under progressively relaxed calendar-gap constraints
 - `results/model_summaries/manuscript_results_manifest.csv`:
   machine-readable map from reported estimates to generated outputs and dataset checksum
 
