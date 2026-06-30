@@ -1,12 +1,12 @@
 # Changelog
 
-## 1.0.1 - 2026-06-30
+## v1.0.0 - 2026-06-30
 
 - Removed internal review-facing documentation from the public repository.
 - Kept supplementary diagnostic tables and figures as manuscript-facing analysis outputs.
-- Updated citation metadata version for the cleaned Zenodo archive.
+- Updated citation metadata for the cleaned Zenodo archive.
 
-## 1.0.1-supplementary-diagnostics - 2026-06-26
+## Supplementary diagnostics - 2026-06-26
 
 - Added operator-year ATRACT/conventional distributions and crude speed summaries in `table_s10_operator_year_distribution.csv`.
 - Added operator adoption-period summaries in `table_s11_operator_adoption.csv`, including explicit identification of `operator_other` as a grouped heterogeneous operator stratum.
@@ -19,7 +19,7 @@
 - Added operator-year treatment and crude speed figures in PNG, PDF, and SVG.
 - Updated README and reproducibility documentation to explain the supplementary diagnostic outputs.
 
-## 1.0.0-manuscript-submission - 2026-06-22
+## Manuscript analysis hardening - 2026-06-22
 
 - Locked the authorized analytic dataset checksum.
 - Recomputed lesion-size subgroup estimates from one matched interaction model.
