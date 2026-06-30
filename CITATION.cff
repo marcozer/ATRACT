@@ -9,15 +9,18 @@ authors:
   - family-names: "Grimaldi"
     given-names: "Jean"
     affiliation: "Endoscopy and Gastroenterology Unit, Edouard Herriot Hospital, Hospices Civils de Lyon, Lyon, France"
+  - family-names: "Chouillard"
+    given-names: "Marc-Anthony"
+    affiliation: "Department of HPB Surgery and Liver Transplantation, Beaujon Hospital, Clichy, France"
   - family-names: "Rivory"
     given-names: "Jérôme"
     affiliation: "Endoscopy and Gastroenterology Unit, Edouard Herriot Hospital, Hospices Civils de Lyon, Lyon, France"
   - family-names: "Ponchon"
     given-names: "Thierry"
     affiliation: "Endoscopy and Gastroenterology Unit, Edouard Herriot Hospital, Hospices Civils de Lyon, Lyon, France"
-  - family-names: "Yzet"
-    given-names: "Clara"
-    affiliation: "Endoscopy and Gastroenterology Unit, Edouard Herriot Hospital, Hospices Civils de Lyon, Lyon, France"
+  - family-names: "Djinbachian"
+    given-names: "Roupen"
+    affiliation: "Division of Gastroenterology, Centre hospitalier de l'Université de Montréal (CHUM) and CRCHUM, Montreal, Quebec, Canada"
   - family-names: "Wallenhorst"
     given-names: "Timothée"
     affiliation: "Gastroenterology and Endoscopy Unit, Pontchaillou University Hospital, Rennes, France"
@@ -30,16 +33,28 @@ authors:
   - family-names: "De Cristofaro"
     given-names: "Elena"
     affiliation: "Department of Systems Medicine, Gastroenterology and Endoscopy Unit, Tor Vergata University of Rome, Rome, Italy"
-  - family-names: "Djinbachian"
-    given-names: "Roupen"
-    affiliation: "Division of Gastroenterology, Montreal University Hospital Center (CHUM), Montreal, Canada"
+  - family-names: "Rostain"
+    given-names: "Florian"
+    affiliation: "Endoscopy and Gastroenterology Unit, Edouard Herriot Hospital, Hospices Civils de Lyon, Lyon, France"
+  - family-names: "Le Baleur"
+    given-names: "Yann"
+    affiliation: "Gastroenterology Unit, Groupe Hospitalier Paris Saint-Joseph, Paris, France"
   - family-names: "Jacques"
     given-names: "Jérémie"
     affiliation: "Gastroenterology and Endoscopy Unit, Dupuytren University Hospital, Limoges, France"
   - family-names: "Pioche"
     given-names: "Mathieu"
     affiliation: "Endoscopy and Gastroenterology Unit, Edouard Herriot Hospital, Hospices Civils de Lyon, Lyon, France"
-version: 1.0.0-manuscript-submission
-date-released: 2026-06-22
+# --- Release metadata: update the three fields below when you cut the GitHub release ---
+# 1) bump 'version' to the released tag (e.g. v1.0.0)
+# 2) set 'date-released' to the release date (YYYY-MM-DD)
+# 3) replace the placeholder DOI in 'identifiers' with the Zenodo DOI minted on release
+version: "1.0.0"
+date-released: "2026-06-30"
 license: MIT
 url: "https://github.com/marcozer/ATRACT"
+repository-code: "https://github.com/marcozer/ATRACT"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.XXXXXXX"   # TODO: replace with the Zenodo DOI after publishing the release
+    description: "Archived release of the ATRACT Public Statistical Analysis"
