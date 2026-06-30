@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 - 2026-06-30
+
+- Removed internal review-facing documentation from the public repository.
+- Kept supplementary diagnostic tables and figures as manuscript-facing analysis outputs.
+- Updated citation metadata version for the cleaned Zenodo archive.
+
 ## 1.0.1-supplementary-diagnostics - 2026-06-26
 
 - Added operator-year ATRACT/conventional distributions and crude speed summaries in `table_s10_operator_year_distribution.csv`.
