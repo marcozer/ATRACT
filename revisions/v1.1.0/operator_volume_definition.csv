@@ -1,0 +1,6 @@
+operator_id_public,volume_group,annual_esd_volume_approx_low,annual_esd_volume_approx_high,esd_experience,definition_source,definition_date
+operator_01,high_volume,300,300,more_than_10_years,study_team_attestation,2026-10-13
+operator_02,high_volume,300,300,more_than_10_years,study_team_attestation,2026-10-13
+operator_03,lower_volume_trained,50,100,approximately_5_years,study_team_attestation,2026-10-13
+operator_04,lower_volume_trained,50,100,approximately_5_years,study_team_attestation,2026-10-13
+operator_other,lower_volume_trained,50,100,approximately_5_years,study_team_attestation,2026-10-13

@@ -2,6 +2,19 @@
 
 This repository contains the public analysis code and reproducible outputs for the ATRACT colorectal ESD cohort. The release is intentionally limited to the analyses retained for the manuscript and supplement.
 
+## Releases
+
+The primary manuscript analysis is archived as [v1.0.0](https://github.com/marcozer/ATRACT/releases/tag/v1.0.0), DOI [10.5281/zenodo.21077086](https://doi.org/10.5281/zenodo.21077086). Its numerical outputs remain unchanged in `results/`.
+
+Additional revision analyses are stored separately in [`revisions/v1.1.0/`](revisions/v1.1.0/README.md). They include fibrosis comparisons on identical complete pairs, operator-volume interactions, directly estimated procedure-duration differences, and wider-caliper diagnostics. The complete estimates are in `revisions/v1.1.0/results/tables/estimates_summary.csv`.
+
+```bash
+make revision-analysis
+make revision-test
+```
+
+As with the primary pipeline, rerunning estimation requires authorized access to the analytic CSV. The versioned directory contains only code, aggregate results and documentation.
+
 ## Repository scope
 
 - Python package for ingestion, anonymization, cohort definition, primary causal analyses, tables, figures, and release checks

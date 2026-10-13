@@ -1,5 +1,17 @@
 # Reproducibility
 
+## Revision release v1.1.0
+
+The additional analyses are isolated in `revisions/v1.1.0/`. From a clean
+checkout, run `make revision-analysis` with the authorized analytic CSV,
+then `make revision-test`. The original root `results/` files serve as frozen
+v1.0.0 references and are not overwritten by the revision pipeline. Their
+61 checksums are verified before and after estimation. The new consolidated
+estimates, formulas, input checksum and software versions are stored in the
+versioned directory. Public tests validate the committed aggregate results
+without requiring row-level data; authorized-data tests additionally
+recompute the matching and fibrosis comparisons.
+
 ## Data access
 
 The row-level deidentified analytic dataset is not distributed in this public repository. It is available upon reasonable request to the study team, subject to institutional governance review.

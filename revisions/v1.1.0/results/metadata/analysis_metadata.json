@@ -1,0 +1,43 @@
+{
+  "version": "v1.1.0",
+  "analysis_date": "2026-10-13",
+  "baseline_commit": "8a74c400ef2a26a3db93e395f634a8f1a4d30b86",
+  "analytic_dataset_sha256": "2da50256c21f9198c963fa3042a8818faf762c574054b87358f1487e65f3089c",
+  "operator_definition_sha256": "f15b80ee5787cc3cef07ff32387c283e6dcb3bfd687aff1614b1811315bdc4e0",
+  "script_sha256": "d2a274a088602a36015442d463c29abfd65b004897a75db1c7c6ecb2ed310eb5",
+  "helpers_sha256": "07a7ea5fc2aeb241fa7fd0e72a53bc2b4bf2acf527fbc5b96d1b92868f04cab3",
+  "software": {
+    "python": "3.9.6",
+    "numpy": "2.0.2",
+    "pandas": "2.3.3",
+    "scipy": "1.13.1",
+    "statsmodels": "0.14.6",
+    "patsy": "1.0.2",
+    "matplotlib": "3.9.4"
+  },
+  "propensity_formula": "atract ~ C(operator_id_public) + study_year_index + bs(major_diameter_mm, df=4, include_intercept=False) + C(location_group) + C(lesion_morphology) + C(jnet_group) + mici_history + recurrence_history",
+  "primary_pairs": 391,
+  "fibrosis_complete_pairs": 372,
+  "continuous_curve_matches_v1_0_0": true,
+  "continuous_curve_sha256_v1_0_0": "c2529bc0bb0825c669f8961e974d0093635243d8cfc8a8bd1c3c422f672ea650",
+  "continuous_interaction": {
+    "analysis": "continuous_size_joint_interaction",
+    "stratum": "continuous size interaction",
+    "outcome": "speed_mm2_min",
+    "n": 782,
+    "n_model": 782,
+    "estimate": 12.842309607745483,
+    "unit": "Wald chi-square statistic",
+    "df": 4,
+    "p_value": 0.01207256054806772,
+    "formula": "speed_mm2_min ~ atract * bs(major_diameter_mm, df=4, include_intercept=False) + C(study_year_index)",
+    "test": "joint robust Wald chi-square",
+    "null_hypothesis": "all four treatment-by-size-spline coefficients equal zero"
+  },
+  "all_v1_0_0_outputs_verified": true,
+  "frozen_output_count": 61,
+  "operator_classification_source": "clinical study-team attestation dated 2026-10-13; fixed group, not time-varying experience",
+  "inference": "matched-set clustered sandwich for matched models; archived empirical influence variance for overlap augmentation",
+  "matching": "global minimum-distance assignment within pseudonymized operator strata; logit calipers in SD units",
+  "wider_calipers_are_exploratory": true
+}

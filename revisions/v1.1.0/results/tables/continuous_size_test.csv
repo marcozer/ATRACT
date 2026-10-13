@@ -1,0 +1,2 @@
+analysis,stratum,outcome,n,n_model,estimate,unit,df,p_value,formula,test,null_hypothesis
+continuous_size_joint_interaction,continuous size interaction,speed_mm2_min,782,782,12.842309607745483,Wald chi-square statistic,4,0.01207256054806772,"speed_mm2_min ~ atract * bs(major_diameter_mm, df=4, include_intercept=False) + C(study_year_index)",joint robust Wald chi-square,all four treatment-by-size-spline coefficients equal zero

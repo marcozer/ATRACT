@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.1.0 - 2026-10-13
+
+- Added revision analyses in `revisions/v1.1.0/` without changing any of the 61 archived v1.0.0 output files.
+- Retained all fibrosis specifications and exported comparisons with and without fibrosis on identical complete pairs, plus a full-covariate model in the original matched cohort.
+- Added the documented high-volume versus lower-volume trained operator comparison, with interaction inference and within-group balance diagnostics.
+- Reproduced the archived continuous-size curve and added its four-degree-of-freedom joint Wald interaction test.
+- Exported directly estimated procedure-duration differences and confidence intervals.
+- Exported effects and confidence intervals for calipers 0.40 and 0.60, alongside their failed primary balance criterion.
+- Added one consolidated estimates CSV, publication-ready figure formats, methods, legends and reproducibility tests.
+- Updated release citation metadata; v1.0.0 and its DOI remain unchanged.
+
 ## v1.0.0 - 2026-06-30
 
 - Removed internal review-facing documentation from the public repository.
